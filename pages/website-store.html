@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Template Store - ReadyFlow</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/store.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
+            <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+        </div>
+        <nav class="main-nav">
+            <a href="/index.html">Home</a>
+            <a href="/pages/custom-development.html">Custom Development</a>
+            <a href="/pages/website-store.html">Template Store</a>
+            <a href="/pages/shopify-services.html">Shopify Services</a>
+        </nav>
+        <div class="header-right">
+            <a href="/cart/cart.html" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-item-count">0</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+    <div class="store-layout">
+        <aside class="store-sidebar">
+            <div class="sidebar-header">
+                <h3>Filters</h3>
+                <button class="sidebar-close-btn">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <div class="filter-group">
+                    <label for="sort-by">Sort by</label>
+                    <select id="sort-by" name="sort-by">
+                        <option value="default">Featured</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Technology</h4>
+                    <div class="checkbox-group"><label><input type="checkbox" name="tech" value="html"> HTML & CSS</label></div>
+                    <div class="checkbox-group"><label><input type="checkbox" name="tech" value="react"> React</label></div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Website Type</h4>
+                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="portfolio"> Portfolio</label></div>
+                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="landing-page"> Landing Page</label></div>
+                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="website"> Full Website</label></div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Pages</h4>
+                    <div class="checkbox-group"><label><input type="checkbox" name="pages" value="1"> 1 Page</label></div>
+                    <div class="checkbox-group"><label><input type="checkbox" name="pages" value="2"> 2 Pages</label></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="product-listing-area">
+            <div class="store-toolbar">
+                <button class="open-sidebar-btn"><i class="fas fa-filter"></i> Filters</button>
+                <p><span id="product-count">2</span> results found</p>
+            </div>
+            <div class="product-list">
+    <div class="product-list-item" data-price="899" data-tech="html" data-type="website" data-pages="2">
+        <div class="list-item-image">
+            <img src="https://via.placeholder.com/400x300/1A202C/FFFFFF?text=Corporate" alt="Corporate Pro Template">
+        </div>
+        <div class="list-item-details">
+            <h3 class="list-item-title">Corporate Pro</h3>
+            <div class="tech-tags-list">
+                <span class="tag html-tag">HTML</span>
+            </div>
+            <p class="list-item-description">A sleek and professional template for businesses and corporate agencies.</p>
+        </div>
+        <div class="list-item-action">
+            <span class="list-item-price">₹899</span>
+            <a href="/pages/product-detail.html" class="btn btn-secondary">View Details</a>
+        </div>
+    </div>
+    <div class="product-list-item" data-price="1499" data-tech="react" data-type="portfolio" data-pages="1">
+        <div class="list-item-image">
+            <img src="https://via.placeholder.com/400x300/1A202C/FFFFFF?text=React+Portfolio" alt="React Portfolio Template">
+        </div>
+        <div class="list-item-details">
+            <h3 class="list-item-title">React Dashboard</h3>
+             <div class="tech-tags-list">
+                <span class="tag react-tag">React</span>
+            </div>
+            <p class="list-item-description">A powerful and responsive admin dashboard built with React for data-intensive applications.</p>
+        </div>
+        <div class="list-item-action">
+            <span class="list-item-price">₹1499</span>
+            <a href="/pages/product-detail.html" class="btn btn-secondary">View Details</a>
+        </div>
+    </div>
+    </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/store.js"></script>
+</body>
+</html>

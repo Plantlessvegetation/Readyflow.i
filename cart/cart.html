@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - ReadyFlow</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/store.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .cart-section { padding: 80px 0; }
+        .cart-container { max-width: 800px; margin: auto; }
+        .cart-item { display: flex; align-items: center; background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-subtle); }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-right: 20px; }
+        .cart-item-details { flex-grow: 1; text-align: left; }
+        .cart-item-details h3 { margin: 0 0 5px 0; color: var(--text-light); }
+        .cart-item-details p { margin: 0; color: var(--accent-green); font-weight: 600; }
+        .cart-item-remove { background: #E53E3E; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .cart-summary { margin-top: 40px; text-align: right; }
+        .cart-summary h2 { font-size: 2rem; }
+    </style>
+</head>
+<body>
+    
+    <header class="main-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
+            <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+        </div>
+        <nav class="main-nav">
+            <a href="/index.html">Home</a>
+            <a href="/pages/custom-development.html">Custom Development</a>
+            <a href="/pages/website-store.html">Template Store</a>
+            <a href="/pages/shopify-services.html">Shopify Services</a>
+        </nav>
+        <div class="header-right">
+            <a href="/cart/cart.html" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-item-count">0</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <section class="cart-section">
+            <div class="cart-container">
+                <h2 class="section-title">Your Shopping Cart</h2>
+                
+                <div id="cart-items-container">
+                    </div>
+
+                <div class="cart-summary">
+                    <h2>Total: <span id="cart-total">₹0.00</span></h2>
+                    <a href="#" class="btn btn-primary" style="margin-top: 20px;">Proceed to Checkout</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../assets/js/store.js"></script>
+</body>
+</html>

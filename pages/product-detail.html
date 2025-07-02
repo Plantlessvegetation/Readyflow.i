@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Name - ReadyFlow</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/store.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
+            <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+        </div>
+        <nav class="main-nav">
+            <a href="/index.html">Home</a>
+            <a href="/pages/custom-development.html">Custom Development</a>
+            <a href="/pages/website-store.html">Template Store</a>
+            <a href="/pages/shopify-services.html">Shopify Services</a>
+        </nav>
+        <div class="header-right">
+            <a href="/cart/cart.html" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-item-count">0</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+    <main class="product-page-main">
+        <div class="product-container">
+            <div class="product-media">
+                <div class="main-media-display">
+                    <video class="showcased-video" controls autoplay loop muted playsinline>
+                        <source src="https://via.placeholder.com/1280x720.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <img src="https://via.placeholder.com/1280x720/1A202C/FFFFFF?text=Main+Image" alt="Main product image" class="showcased-image" style="display: none;">
+                </div>
+                <div class="thumbnail-gallery">
+                    <img src="https://via.placeholder.com/150x100/1A202C/FFFFFF?text=Video" alt="Video thumbnail" class="thumbnail active" data-type="video">
+                    <img src="https://via.placeholder.com/150x100/1A202C/FFFFFF?text=Image+1" alt="Product thumbnail 1" class="thumbnail" data-type="image" data-src="https://via.placeholder.com/1280x720/1A202C/FFFFFF?text=Image+1">
+                    <img src="https://via.placeholder.com/150x100/1A202C/FFFFFF?text=Image+2" alt="Product thumbnail 2" class="thumbnail" data-type="image" data-src="https://via.placeholder.com/1280x720/1A202C/FFFFFF?text=Image+2">
+                    <img src="https://via.placeholder.com/150x100/1A202C/FFFFFF?text=Image+3" alt="Product thumbnail 3" class="thumbnail" data-type="image" data-src="https://via.placeholder.com/1280x720/1A202C/FFFFFF?text=Image+3">
+                </div>
+            </div>
+
+            <div class="product-details">
+                <div class="tech-tags"><span class="tag html-tag">HTML & CSS</span></div>
+                <h1 class="product-page-title">Corporate Pro Website</h1>
+                <p class="product-page-description">A sleek and professional website template designed for businesses, financial institutions, and corporate agencies. Fully responsive with clean, modern UI elements.</p>
+                <h3>Best For:</h3>
+                <ul class="use-case-list">
+                    <li>Consulting Firms</li>
+                    <li>Financial Advisors</li>
+                    <li>Startups & Tech Companies</li>
+                </ul>
+                <div class="product-page-purchase">
+                    <span class="product-page-price">₹899</span>
+                    <button class="btn btn-primary add-to-cart-btn" data-id="prod_001">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/store.js"></script>
+</body>
+</html>

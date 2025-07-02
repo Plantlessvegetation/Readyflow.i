@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Development Quote - ReadyFlow</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .page-hero { background-color: var(--bg-secondary); padding: 60px 0; }
+        .calculator-section { padding: 80px 0; }
+        .calculator-form { max-width: 700px; margin: 50px auto; background: var(--bg-secondary); padding: 40px; border-radius: 12px; border: 1px solid var(--border-subtle); text-align: left; }
+        .form-group { margin-bottom: 30px; }
+        .form-group label { display: block; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+        .radio-group label, .checkbox-group label { display: flex; align-items: center; margin-bottom: 10px; font-size: 1rem; cursor: pointer; }
+        .radio-group input, .checkbox-group input { margin-right: 12px; }
+        select { width: 100%; padding: 12px; background: var(--bg-primary); color: var(--text-light); border: 1px solid var(--border-subtle); border-radius: 8px; font-size: 1rem; }
+        .price-output { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-subtle); }
+        .price-output .price-value { font-size: 2.8rem; font-weight: 700; color: var(--accent-green); font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
+                <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+            </div>
+            <nav class="main-nav">
+                <a href="/pages/custom-development.html" class="active">Custom Development</a>
+                <a href="/pages/website-store.html">Template Store</a>
+                <a href="/pages/shopify-services.html">Shopify Services</a>
+            </nav>
+            <div class="header-right">
+                <a href="/cart/cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-item-count">0</span>
+                </a>
+                <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="section-title" style="margin-bottom: 10px;">Instant Project Estimate</h1>
+                <p class="impact-subheadline" style="margin-bottom: 0;">Select your project requirements to get a real-time price estimate.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <form id="price-calculator-form" class="calculator-form">
+                    <div class="form-group">
+                        <label>1. Select Technology</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="tech" value="html" checked> HTML, CSS, JS</label>
+                            <label><input type="radio" name="tech" value="react"> React.js</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pages">2. Select Number of Pages</label>
+                        <select id="pages" name="pages">
+                            <option value="1">Single Page Website</option>
+                            <option value="3">Up to 3 Pages</option>
+                            <option value="5">Up to 5 Pages</option>
+                            <option value="10">10+ Pages</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>3. Additional Features</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="features" value="ecommerce"> E-commerce Functionality</label>
+                            <label><input type="checkbox" name="features" value="cms"> CMS Integration</label>
+                            <label><input type="checkbox" name="features" value="animations"> Advanced Animations</label>
+                        </div>
+                    </div>
+                    <div class="price-output">
+                        <h3>Estimated Price:</h3>
+                        <div id="estimated-price" class="price-value">₹0</div>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">This is an estimate. We'll provide a final quote after a consultation.</p>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer-v2">
+        <div class="container">
+            <p>Made with ❤️ by ReadyFlow</p>
+            <small>© 2025 ReadyFlow. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/custom-price-calculator.js"></script>
+</body>
+</html>
