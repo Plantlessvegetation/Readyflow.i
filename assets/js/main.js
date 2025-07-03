@@ -1,3 +1,5 @@
+// This script handles sitewide functionality like theme switching and mobile navigation.
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- THEME SWITCHER LOGIC ---
@@ -5,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeSwitcher) {
         const sunIcon = themeSwitcher.querySelector('.fa-sun');
         const moonIcon = themeSwitcher.querySelector('.fa-moon');
-        const currentTheme = localStorage.getItem('theme');
-
+        
+        // Function to apply the saved theme on page load
         const applyTheme = (theme) => {
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
@@ -19,10 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Check for saved theme in localStorage
+        const currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
             applyTheme(currentTheme);
         }
 
+        // Add click event to toggle theme
         themeSwitcher.addEventListener('click', () => {
             let theme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
             localStorage.setItem('theme', theme);
@@ -39,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- HEADLINE ANIMATION LOGIC ---
+    // --- HEADLINE ANIMATION LOGIC (for homepage) ---
     const headline = document.getElementById('animated-headline');
     if (headline) {
         const words = headline.querySelectorAll('.word');
@@ -51,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headline.classList.add('animate');
     }
 
-    // --- FAQ ACCORDION LOGIC ---
+    // --- FAQ ACCORDION LOGIC (for homepage) ---
     const faqItems = document.querySelectorAll('.faq-item');
     if (faqItems.length > 0) {
         faqItems.forEach(item => {
@@ -59,15 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
             question.addEventListener('click', () => {
                 const answer = item.querySelector('.faq-answer');
                 const wasActive = item.classList.contains('active');
+                
+                // Optional: Close other FAQs when one is opened
                 faqItems.forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.classList.remove('active');
-                        otherItem.querySelector('.faq-answer').style.maxHeight = 0;
+                        otherItem.querySelector('.faq-answer').style.maxHeight = null;
                     }
                 });
+
+                // Toggle the clicked FAQ
                 if (wasActive) {
                     item.classList.remove('active');
-                    answer.style.maxHeight = 0;
+                    answer.style.maxHeight = null;
                 } else {
                     item.classList.add('active');
                     answer.style.maxHeight = answer.scrollHeight + 'px';
@@ -75,4 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- ACTIVE NAV LINK HIGHLIGHTING ---
+    const navLinks = document.querySelectorAll('.main-nav a');
+    const currentPath = window.location.pathname;
+
+    navLinks.forEach(link => {
+        // Handle homepage link
+        if (link.getAttribute('href') === '/index.html' && currentPath === '/index.html') {
+            document.querySelector('.home-icon-btn').classList.add('active');
+        }
+        // Handle other page links
+        if (currentPath.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/index.html') {
+            link.classList.add('active');
+        }
+    });
 });

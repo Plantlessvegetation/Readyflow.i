@@ -36,19 +36,22 @@ main { flex-grow: 1; }
 .highlight-orange { color: #F97316; }
 
 /* --- HEADER & NAVIGATION --- */
-.main-header { background: var(--bg-secondary); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-subtle); padding: 10px 0; position: sticky; top: 0; z-index: 999; transition: background-color 0.3s ease, border-color 0.3s ease; }
+.main-header { background: rgba(26, 32, 44, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-subtle); padding: 10px 0; position: sticky; top: 0; z-index: 999; transition: background-color 0.3s ease, border-color 0.3s ease; }
+body.light-theme .main-header { background: rgba(255, 255, 255, 0.8); }
 .header-container { max-width: 1140px; margin: 0 auto; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; }
 .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
 .header-logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.8rem; color: var(--text-primary); text-decoration: none; }
 .header-logo span { color: var(--accent-color); }
 .main-nav { display: flex; gap: 30px; }
-.main-nav a { color: var(--text-muted); text-decoration: none; font-weight: 600; transition: color 0.3s ease; font-size: 1rem; padding: 5px 0; }
+.main-nav a { color: var(--text-muted); text-decoration: none; font-weight: 600; transition: color 0.3s ease; font-size: 1rem; padding: 5px 0; position: relative; }
 .main-nav a:hover, .main-nav a.active { color: var(--accent-color); }
+.main-nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; background-color: var(--accent-color); transition: all 0.3s ease; }
+.main-nav a:hover::after, .main-nav a.active::after { width: 100%; left: 0; }
 .home-icon-btn, .theme-switcher { color: var(--text-muted); text-decoration: none; font-size: 1.2rem; padding: 10px; border-radius: 50%; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; }
 .home-icon-btn:hover, .theme-switcher:hover { color: var(--text-primary); background-color: var(--bg-primary); }
 .home-icon-btn.active { color: var(--accent-color); }
 .cart-link { background-color: var(--accent-color); color: #FFFFFF; padding: 8px 15px; border-radius: 24px; position: relative; text-decoration: none; transition: background-color 0.3s ease; }
-#cart-item-count { position: absolute; top: -8px; right: -8px; background-color: var(--accent-orange); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; border: 2px solid var(--bg-secondary); }
+#cart-item-count { position: absolute; top: -8px; right: -8px; background-color: #F97316; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; border: 2px solid var(--bg-secondary); }
 .mobile-nav-toggle { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
 
 /* --- BUTTONS --- */
