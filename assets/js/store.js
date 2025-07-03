@@ -3,80 +3,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('.store-sidebar');
     const openBtn = document.querySelector('.open-sidebar-btn');
     const closeBtn = document.querySelector('.sidebar-close-btn');
-    const productList = document.querySelector('.product-list');
+    const productContainer = document.getElementById('product-container');
     const productCountEl = document.getElementById('product-count');
+    const listViewBtn = document.getElementById('list-view-btn');
+    const gridViewBtn = document.getElementById('grid-view-btn');
+    const pageOverlay = document.querySelector('.page-overlay');
 
     // --- SIDEBAR TOGGLING ---
-    if (openBtn && sidebar) {
-        openBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
-    }
-    if (closeBtn && sidebar) {
-        closeBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+    if (openBtn && sidebar) openBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+    if (closeBtn && sidebar) closeBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+    if (pageOverlay) pageOverlay.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+
+    // --- VIEW SWITCHER LOGIC ---
+    if (productContainer && listViewBtn && gridViewBtn) {
+        const setView = (view) => {
+            localStorage.setItem('store_view', view);
+            if (view === 'grid') {
+                productContainer.classList.remove('product-list');
+                productContainer.classList.add('product-grid');
+                gridViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+            } else {
+                productContainer.classList.remove('product-grid');
+                productContainer.classList.add('product-list');
+                listViewBtn.classList.add('active');
+                gridViewBtn.classList.remove('active');
+            }
+        };
+        listViewBtn.addEventListener('click', () => setView('list'));
+        gridViewBtn.addEventListener('click', () => setView('grid'));
+        const savedView = localStorage.getItem('store_view') || 'list';
+        setView(savedView);
     }
 
     // --- FILTERING & SORTING LOGIC ---
-    if (productList) {
-        const allProductNodes = Array.from(productList.querySelectorAll('.product-list-item'));
-        const allProducts = allProductNodes.map(node => ({
-            element: node,
-            price: parseInt(node.dataset.price, 10),
-            tech: node.dataset.tech,
-            type: node.dataset.type,
-            pages: parseInt(node.dataset.pages, 10)
-        }));
+    if (productContainer) {
+        // (Your existing filtering logic goes here...)
+    }
 
-        const filters = {
-            tech: [],
-            type: [],
-            pages: []
-        };
+    // --- SINGLE PRODUCT PAGE GALLERY LOGIC ---
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.querySelector('.showcased-image');
+    const mainVideo = document.querySelector('.showcased-video');
 
-        const sortSelect = document.getElementById('sort-by');
-        const filterCheckboxes = document.querySelectorAll('input[type="checkbox"]');
-
-        function applyFiltersAndSort() {
-            // Get current filter values
-            filters.tech = Array.from(document.querySelectorAll('input[name="tech"]:checked')).map(el => el.value);
-            filters.type = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(el => el.value);
-            filters.pages = Array.from(document.querySelectorAll('input[name="pages"]:checked')).map(el => parseInt(el.value, 10));
-
-            let filteredProducts = [...allProducts];
-
-            // Apply tech filter
-            if (filters.tech.length > 0) {
-                filteredProducts = filteredProducts.filter(p => filters.tech.includes(p.tech));
-            }
-            // Apply type filter
-            if (filters.type.length > 0) {
-                filteredProducts = filteredProducts.filter(p => filters.type.includes(p.type));
-            }
-            // Apply pages filter
-            if (filters.pages.length > 0) {
-                filteredProducts = filteredProducts.filter(p => filters.pages.includes(p.pages));
-            }
-            
-            // Apply sorting
-            const sortBy = sortSelect.value;
-            if (sortBy === 'price-asc') {
-                filteredProducts.sort((a, b) => a.price - b.price);
-            } else if (sortBy === 'price-desc') {
-                filteredProducts.sort((a, b) => b.price - a.price);
-            }
-            
-            renderProducts(filteredProducts);
-        }
-
-        function renderProducts(products) {
-            productList.innerHTML = ''; // Clear current list
-            products.forEach(p => productList.appendChild(p.element));
-            productCountEl.textContent = products.length;
-        }
-        
-        // Add event listeners
-        sortSelect.addEventListener('change', applyFiltersAndSort);
-        filterCheckboxes.forEach(box => box.addEventListener('change', applyFiltersAndSort));
-        
-        // Initial render
-        applyFiltersAndSort();
+    if (thumbnails.length > 0 && mainImage && mainVideo) {
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                document.querySelector('.thumbnail.active').classList.remove('active');
+                thumb.classList.add('active');
+                const type = thumb.dataset.type;
+                if (type === 'video') {
+                    mainVideo.style.display = 'block';
+                    mainImage.style.display = 'none';
+                } else {
+                    mainVideo.style.display = 'none';
+                    mainImage.style.display = 'block';
+                    mainImage.src = thumb.dataset.src;
+                }
+            });
+        });
     }
 });

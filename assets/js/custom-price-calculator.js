@@ -1,55 +1,100 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('price-calculator-form');
+    // --- ELEMENTS ---
+    const techOptions = document.querySelectorAll('[data-group="tech"] .option-box');
+    const typeOptions = document.querySelectorAll('[data-group="type"] .option-box');
+    const integrationOptions = document.querySelectorAll('[data-group="integrations"] .option-box');
+    const pageSlider = document.getElementById('page-slider');
+    const pageCountDisplay = document.getElementById('page-count-display');
     const priceDisplay = document.getElementById('estimated-price');
+    const priceBarFill = document.getElementById('price-bar-fill');
+    const pagesSection = document.getElementById('pages-section'); // Get the section itself
 
-    if (!form) return; // Don't run if the form isn't on the page
+    if (!pageSlider) return; // Exit if not on the calculator page
 
-    // --- AGGRESSIVE PRICING MODEL FOR NEW MARKET ENTRY ---
-    const BASE_PRICES = {
-        html: 2499,
-        react: 5999,
+    // --- PRICING CONFIG (Aggressive Indian Market Pricing) ---
+    const PRICING = {
+        tech: { html: 1999, react: 4999 },
+        type: { 'landing-page': 500, 'full-website': 2000 },
+        perPage: 999,
+        integrations: { seo: 1499, ecommerce: 7999, cms: 3999 }
     };
 
-    const PAGE_COSTS = {
-        1: 0,
-        3: 2000,
-        5: 3500,
-        10: 7000,
+    const MAX_ESTIMATE = 50000;
+
+    // --- STATE ---
+    let selections = {
+        tech: 'html',
+        type: 'landing-page',
+        pages: 1,
+        integrations: []
     };
 
-    const FEATURE_COSTS = {
-        ecommerce: 8000,
-        cms: 4000,
-        animations: 2500,
-    };
-    // --------------------------------------------------
-
+    // --- FUNCTIONS ---
     function calculatePrice() {
-        const formData = new FormData(form);
-        const tech = formData.get('tech');
-        const pages = formData.get('pages');
-        const features = formData.getAll('features');
-
-        let totalPrice = 0;
+        let total = 0;
+        total += PRICING.tech[selections.tech] || 0;
+        total += PRICING.type[selections.type] || 0;
         
-        // Base tech price
-        totalPrice += BASE_PRICES[tech] || 0;
+        // Only add page cost if it's a full website
+        if (selections.type === 'full-website') {
+            total += (selections.pages - 1) * PRICING.perPage;
+        }
 
-        // Page cost
-        totalPrice += PAGE_COSTS[pages] || 0;
-
-        // Feature costs
-        features.forEach(feature => {
-            totalPrice += FEATURE_COSTS[feature] || 0;
+        selections.integrations.forEach(int => {
+            total += PRICING.integrations[int] || 0;
         });
 
-        // Format the price with a Rupee symbol and commas
-        priceDisplay.textContent = `₹${totalPrice.toLocaleString('en-IN')}`;
+        priceDisplay.textContent = `₹${total.toLocaleString('en-IN')}`;
+        const barWidth = Math.min(100, (total / MAX_ESTIMATE) * 100);
+        priceBarFill.style.width = `${barWidth}%`;
     }
 
-    // Listen for any change on any form element
-    form.addEventListener('change', calculatePrice);
-    
-    // Calculate the initial price when the page loads
+    function handleOptionClick(options, key, isMultiSelect = false) {
+        options.forEach(box => {
+            box.addEventListener('click', () => {
+                const value = box.dataset.value;
+                if (isMultiSelect) {
+                    box.classList.toggle('selected');
+                    if (selections[key].includes(value)) {
+                        selections[key] = selections[key].filter(item => item !== value);
+                    } else {
+                        selections[key].push(value);
+                    }
+                } else {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    box.classList.add('selected');
+                    selections[key] = value;
+                }
+
+                // ** NEW LOGIC TO SHOW/HIDE PAGES SECTION **
+                if (key === 'type') {
+                    if (value === 'full-website') {
+                        pagesSection.style.display = 'block';
+                        // Use the slider's current value when showing it
+                        selections.pages = parseInt(pageSlider.value, 10);
+                    } else {
+                        pagesSection.style.display = 'none';
+                        // CRITICAL: Reset pages to 1 for landing page
+                        selections.pages = 1;
+                    }
+                }
+                
+                calculatePrice();
+            });
+        });
+    }
+
+    // --- EVENT LISTENERS ---
+    handleOptionClick(techOptions, 'tech');
+    handleOptionClick(typeOptions, 'type');
+    handleOptionClick(integrationOptions, 'integrations', true);
+
+    pageSlider.addEventListener('input', (e) => {
+        selections.pages = parseInt(e.target.value, 10);
+        pageCountDisplay.textContent = selections.pages;
+        calculatePrice();
+    });
+
+    // --- INITIAL CALCULATION ---
     calculatePrice();
 });

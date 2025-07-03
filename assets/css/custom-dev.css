@@ -1,0 +1,27 @@
+/* --- CUSTOM DEV CALCULATOR STYLES --- */
+.calculator-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 60px; max-width: 1200px; margin: 80px auto; padding: 0 25px; }
+.form-section + .form-section { margin-top: 50px; }
+.calculator-form h3 { font-size: 1.8rem; margin-bottom: 25px; color: var(--text-primary); }
+.option-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary); }
+.option-box:hover { border-color: var(--accent-color); }
+.option-box.selected { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(39, 174, 96, 0.3); }
+body.light-theme .option-box.selected { box-shadow: 0 0 15px rgba(124, 58, 237, 0.2); }
+.page-slider-group { margin-top: 20px; }
+.page-slider-group .slider-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.page-slider-group #page-count-display { font-weight: 700; color: var(--accent-color); }
+input[type="range"] { width: 100%; -webkit-appearance: none; appearance: none; height: 8px; background: var(--border-subtle); border-radius: 4px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: var(--accent-color); cursor: pointer; border-radius: 50%; }
+.price-estimate-box { background: var(--bg-secondary); border-radius: 16px; padding: 30px; position: sticky; top: 100px; text-align: center; border: 2px solid var(--accent-color); box-shadow: 0 0 25px rgba(39, 174, 96, 0.3); }
+body.light-theme .price-estimate-box { border-color: transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.price-estimate-box h4 { font-size: 1.2rem; color: var(--text-muted); font-weight: normal; }
+.price-estimate-box .estimated-price-value { font-family: 'Poppins', sans-serif; font-size: 4rem; font-weight: 700; color: var(--accent-color); margin: 10px 0; }
+.price-estimate-box .price-bar { width: 100%; height: 6px; background: var(--border-subtle); border-radius: 3px; margin: 20px 0; }
+.price-estimate-box .price-bar-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 3px; transition: width 0.3s ease; }
+.price-estimate-box p { font-size: 0.9rem; margin-bottom: 25px; }
+.consultation-btn { background: var(--accent-color); width: 100%; padding: 18px 20px; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; border-radius: 24px; border: none; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+.consultation-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+@media (max-width: 992px) { 
+    .calculator-layout { grid-template-columns: 1fr; } 
+    .price-estimate-box { position: static; margin-top: 40px; } 
+}

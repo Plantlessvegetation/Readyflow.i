@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Template Store - ReadyFlow</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/store.css">
@@ -13,108 +12,109 @@
 <body>
 
     <header class="main-header">
-    <div class="header-container">
-        <div class="header-left">
-            <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
-            <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+        <div class="header-container">
+            <div class="header-left">
+                <a href="/index.html" class="home-icon-btn"><i class="fas fa-home"></i></a>
+                <a href="/index.html" class="header-logo">Ready<span>Flow</span></a>
+            </div>
+            <nav class="main-nav">
+                <a href="/pages/custom-development.html">Custom Development</a>
+                <a href="/pages/website-store.html" class="active">Template Store</a>
+                <a href="/pages/shopify-services.html">Shopify Services</a>
+            </nav>
+            <div class="header-right">
+                <button class="theme-switcher" id="theme-switcher" title="Toggle Theme"><i class="fas fa-sun"></i><i class="fas fa-moon" style="display: none;"></i></button>
+                <a href="/cart/cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i><span id="cart-item-count">0</span></a>
+                <button class="mobile-nav-toggle" aria-label="Toggle Navigation"><i class="fas fa-bars"></i></button>
+            </div>
         </div>
-        <nav class="main-nav">
-            <a href="/index.html">Home</a>
-            <a href="/pages/custom-development.html">Custom Development</a>
-            <a href="/pages/website-store.html">Template Store</a>
-            <a href="/pages/shopify-services.html">Shopify Services</a>
-        </nav>
-        <div class="header-right">
-            <a href="/cart/cart.html" class="cart-link">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-item-count">0</span>
-            </a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </div>
-</header>
+    </header>
 
     <div class="store-layout">
         <aside class="store-sidebar">
-            <div class="sidebar-header">
-                <h3>Filters</h3>
-                <button class="sidebar-close-btn">&times;</button>
-            </div>
+            <div class="sidebar-header"><h3>Filters</h3><button class="sidebar-close-btn">&times;</button></div>
             <div class="sidebar-content">
-                <div class="filter-group">
-                    <label for="sort-by">Sort by</label>
-                    <select id="sort-by" name="sort-by">
-                        <option value="default">Featured</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <h4>Technology</h4>
-                    <div class="checkbox-group"><label><input type="checkbox" name="tech" value="html"> HTML & CSS</label></div>
-                    <div class="checkbox-group"><label><input type="checkbox" name="tech" value="react"> React</label></div>
-                </div>
-
-                <div class="filter-group">
-                    <h4>Website Type</h4>
-                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="portfolio"> Portfolio</label></div>
-                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="landing-page"> Landing Page</label></div>
-                    <div class="checkbox-group"><label><input type="checkbox" name="type" value="website"> Full Website</label></div>
-                </div>
-
-                <div class="filter-group">
-                    <h4>Pages</h4>
-                    <div class="checkbox-group"><label><input type="checkbox" name="pages" value="1"> 1 Page</label></div>
-                    <div class="checkbox-group"><label><input type="checkbox" name="pages" value="2"> 2 Pages</label></div>
-                </div>
+                <div class="filter-group"><label for="sort-by">Sort by</label><select id="sort-by" name="sort-by"><option value="default">Featured</option><option value="price-asc">Price: Low to High</option><option value="price-desc">Price: High to Low</option></select></div>
+                <div class="filter-group"><h4>Technology</h4><div class="checkbox-group"><label><input type="checkbox" name="tech" value="html"> HTML & CSS</label></div><div class="checkbox-group"><label><input type="checkbox" name="tech" value="react"> React</label></div></div>
+                <div class="filter-group"><h4>Website Type</h4><div class="checkbox-group"><label><input type="checkbox" name="type" value="portfolio"> Portfolio</label></div><div class="checkbox-group"><label><input type="checkbox" name="type" value="landing-page"> Landing Page</label></div><div class="checkbox-group"><label><input type="checkbox" name="type" value="website"> Full Website</label></div></div>
+                <div class="filter-group"><h4>Pages</h4><div class="checkbox-group"><label><input type="checkbox" name="pages" value="1"> 1 Page</label></div><div class="checkbox-group"><label><input type="checkbox" name="pages" value="2"> 2 Pages</label></div></div>
             </div>
         </aside>
+        <div class="page-overlay"></div>
 
         <main class="product-listing-area">
-            <div class="store-toolbar">
-                <button class="open-sidebar-btn"><i class="fas fa-filter"></i> Filters</button>
-                <p><span id="product-count">2</span> results found</p>
+             <div class="page-hero">
+                <div class="container">
+                    <h1 class="section-title" style="margin-bottom: 10px;">Template <span class="highlight-green">Marketplace</span></h1>
+                    <p class="impact-subheadline" style="margin-top: -20px;">Browse our collection of professionally crafted, high-performance website codes.</p>
+                </div>
             </div>
-            <div class="product-list">
-    <div class="product-list-item" data-price="899" data-tech="html" data-type="website" data-pages="2">
-        <div class="list-item-image">
-            <img src="https://via.placeholder.com/400x300/1A202C/FFFFFF?text=Corporate" alt="Corporate Pro Template">
-        </div>
-        <div class="list-item-details">
-            <h3 class="list-item-title">Corporate Pro</h3>
-            <div class="tech-tags-list">
-                <span class="tag html-tag">HTML</span>
+            <div class="store-content-wrapper">
+                <div class="store-toolbar">
+                    <button class="open-sidebar-btn"><i class="fas fa-filter"></i> Filters</button>
+                    <div class="sort-and-view">
+                        <select id="sort-by" name="sort-by"><option value="default">Sort by: Featured</option><option value="price-asc">Price: Low to High</option><option value="price-desc">Price: High to Low</option></select>
+                        <div class="view-switcher">
+                            <button class="view-btn active" id="list-view-btn" title="List View"><i class="fas fa-bars"></i></button>
+                            <button class="view-btn" id="grid-view-btn" title="Grid View"><i class="fas fa-th-large"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="product-container" class="product-list">
+                    <!-- PRODUCT 1 -->
+                    <div class="product-item" data-price="799" data-tech="html" data-type="website" data-pages="2">
+                        <div class="item-image"><img src="../assets/images/cafe-small-business.png" alt="Cafe & Small Business Website"></div>
+                        <div class="item-details"><h3 class="item-title">Cafe & Small Business</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">A charming template perfect for local cafes, bakeries, and small shops.</p></div>
+                        <div class="item-action"><span class="item-price">₹799</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 2 -->
+                    <div class="product-item" data-price="499" data-tech="html" data-type="landing-page" data-pages="1">
+                        <div class="item-image"><img src="../assets/images/event-webinar.png" alt="Event & Webinar Registration Website"></div>
+                        <div class="item-details"><h3 class="item-title">Event & Webinar</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">A high-converting landing page to drive registrations for your next event.</p></div>
+                        <div class="item-action"><span class="item-price">₹499</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 3 -->
+                    <div class="product-item" data-price="899" data-tech="html" data-type="website" data-pages="2">
+                        <div class="item-image"><img src="../assets/images/fitness-trainer.png" alt="Fitness Trainer & Gym Website"></div>
+                        <div class="item-details"><h3 class="item-title">Fitness & Gym</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">An energetic and modern site for personal trainers, gyms, and fitness studios.</p></div>
+                        <div class="item-action"><span class="item-price">₹899</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 4 -->
+                    <div class="product-item" data-price="699" data-tech="react" data-type="portfolio" data-pages="1">
+                        <div class="item-image"><img src="../assets/images/freelancer-portfolio.png" alt="Freelancer Portfolio Website"></div>
+                        <div class="item-details"><h3 class="item-title">Freelancer Portfolio</h3><div class="item-tags"><span class="tag react-tag">React</span></div><p class="item-description">A sleek, modern portfolio to showcase your work and attract clients.</p></div>
+                        <div class="item-action"><span class="item-price">₹699</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 5 -->
+                    <div class="product-item" data-price="999" data-tech="html" data-type="website" data-pages="1">
+                        <div class="item-image"><img src="../assets/images/one-product-ecommerce.png" alt="One Product E-commerce Store"></div>
+                        <div class="item-details"><h3 class="item-title">One Product Store</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">A focused e-commerce template designed to sell a single flagship product.</p></div>
+                        <div class="item-action"><span class="item-price">₹999</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 6 -->
+                    <div class="product-item" data-price="699" data-tech="html" data-type="portfolio" data-pages="1">
+                        <div class="item-image"><img src="../assets/images/photography-portfolio.png" alt="Photography Creative Portfolio"></div>
+                        <div class="item-details"><h3 class="item-title">Photography Portfolio</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">A visually stunning, image-focused portfolio for photographers and artists.</p></div>
+                        <div class="item-action"><span class="item-price">₹699</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 7 -->
+                    <div class="product-item" data-price="1299" data-tech="react" data-type="website" data-pages="2">
+                        <div class="item-image"><img src="../assets/images/real-estate-listing.png" alt="Real Estate Listing Website"></div>
+                        <div class="item-details"><h3 class="item-title">Real Estate Listing</h3><div class="item-tags"><span class="tag react-tag">React</span></div><p class="item-description">A feature-rich template for real estate agents and property listings.</p></div>
+                        <div class="item-action"><span class="item-price">₹1299</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                    <!-- PRODUCT 8 -->
+                    <div class="product-item" data-price="399" data-tech="html" data-type="portfolio" data-pages="1">
+                        <div class="item-image"><img src="../assets/images/resume-cv.png" alt="Resume CV Website"></div>
+                        <div class="item-details"><h3 class="item-title">Resume / CV</h3><div class="item-tags"><span class="tag html-tag">HTML</span></div><p class="item-description">A clean, professional one-page site to act as your online resume.</p></div>
+                        <div class="item-action"><span class="item-price">₹399</span><a href="#" class="btn btn-secondary">View Details</a></div>
+                    </div>
+                </div>
             </div>
-            <p class="list-item-description">A sleek and professional template for businesses and corporate agencies.</p>
-        </div>
-        <div class="list-item-action">
-            <span class="list-item-price">₹899</span>
-            <a href="/pages/product-detail.html" class="btn btn-secondary">View Details</a>
-        </div>
-    </div>
-    <div class="product-list-item" data-price="1499" data-tech="react" data-type="portfolio" data-pages="1">
-        <div class="list-item-image">
-            <img src="https://via.placeholder.com/400x300/1A202C/FFFFFF?text=React+Portfolio" alt="React Portfolio Template">
-        </div>
-        <div class="list-item-details">
-            <h3 class="list-item-title">React Dashboard</h3>
-             <div class="tech-tags-list">
-                <span class="tag react-tag">React</span>
-            </div>
-            <p class="list-item-description">A powerful and responsive admin dashboard built with React for data-intensive applications.</p>
-        </div>
-        <div class="list-item-action">
-            <span class="list-item-price">₹1499</span>
-            <a href="/pages/product-detail.html" class="btn btn-secondary">View Details</a>
-        </div>
-    </div>
-    </div>
         </main>
     </div>
 
+    <script src="../assets/js/main.js"></script>
     <script src="../assets/js/store.js"></script>
 </body>
 </html>

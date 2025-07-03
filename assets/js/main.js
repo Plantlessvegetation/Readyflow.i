@@ -1,9 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- THEME SWITCHER LOGIC ---
+    const themeSwitcher = document.getElementById('theme-switcher');
+    if (themeSwitcher) {
+        const sunIcon = themeSwitcher.querySelector('.fa-sun');
+        const moonIcon = themeSwitcher.querySelector('.fa-moon');
+        const currentTheme = localStorage.getItem('theme');
+
+        const applyTheme = (theme) => {
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                if(sunIcon) sunIcon.style.display = 'none';
+                if(moonIcon) moonIcon.style.display = 'inline-block';
+            } else {
+                document.body.classList.remove('light-theme');
+                if(sunIcon) sunIcon.style.display = 'inline-block';
+                if(moonIcon) moonIcon.style.display = 'none';
+            }
+        };
+
+        if (currentTheme) {
+            applyTheme(currentTheme);
+        }
+
+        themeSwitcher.addEventListener('click', () => {
+            let theme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+        });
+    }
+
     // --- MOBILE NAVIGATION TOGGLE ---
     const navToggleBtn = document.querySelector('.mobile-nav-toggle');
     const mainHeader = document.querySelector('.main-header');
-
     if (navToggleBtn && mainHeader) {
         navToggleBtn.addEventListener('click', () => {
             mainHeader.classList.toggle('nav-open');
@@ -46,5 +75,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
 });

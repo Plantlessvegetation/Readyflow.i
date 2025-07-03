@@ -3,25 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Development Quote - ReadyFlow</title>
+    <title>Custom Development Calculator - ReadyFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .page-hero { background-color: var(--bg-secondary); padding: 60px 0; }
-        .calculator-section { padding: 80px 0; }
-        .calculator-form { max-width: 700px; margin: 50px auto; background: var(--bg-secondary); padding: 40px; border-radius: 12px; border: 1px solid var(--border-subtle); text-align: left; }
-        .form-group { margin-bottom: 30px; }
-        .form-group label { display: block; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
-        .radio-group label, .checkbox-group label { display: flex; align-items: center; margin-bottom: 10px; font-size: 1rem; cursor: pointer; }
-        .radio-group input, .checkbox-group input { margin-right: 12px; }
-        select { width: 100%; padding: 12px; background: var(--bg-primary); color: var(--text-light); border: 1px solid var(--border-subtle); border-radius: 8px; font-size: 1rem; }
-        .price-output { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-subtle); }
-        .price-output .price-value { font-size: 2.8rem; font-weight: 700; color: var(--accent-green); font-family: 'Poppins', sans-serif; }
+        .calculator-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 60px; max-width: 1200px; margin: 80px auto; padding: 0 25px; }
+        .calculator-form h3 { font-size: 1.8rem; margin-bottom: 20px; }
+        .form-section { margin-bottom: 40px; }
+        .option-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; }
+        .option-box:hover { border-color: var(--accent-color); }
+        .option-box.selected { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(39, 174, 96, 0.3); }
+        body.light-theme .option-box.selected { box-shadow: 0 0 15px rgba(124, 58, 237, 0.2); }
+        .page-slider-group { margin-top: 20px; }
+        .page-slider-group .slider-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .page-slider-group #page-count-display { font-weight: 700; color: var(--accent-color); }
+        input[type="range"] { width: 100%; -webkit-appearance: none; appearance: none; height: 8px; background: var(--border-subtle); border-radius: 4px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: var(--accent-color); cursor: pointer; border-radius: 50%; }
+        .price-estimate-box { background: var(--bg-secondary); border-radius: 16px; padding: 30px; position: sticky; top: 100px; text-align: center; border: 2px solid var(--accent-color); box-shadow: 0 0 25px rgba(39, 174, 96, 0.3); }
+        body.light-theme .price-estimate-box { border-color: transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .price-estimate-box h4 { font-size: 1.2rem; color: var(--text-muted); font-weight: normal; }
+        .price-estimate-box .estimated-price-value { font-family: 'Poppins', sans-serif; font-size: 4rem; font-weight: 700; color: var(--accent-color); margin: 10px 0; }
+        .price-estimate-box .price-bar { width: 100%; height: 6px; background: var(--border-subtle); border-radius: 3px; margin: 20px 0; }
+        .price-estimate-box .price-bar-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 3px; transition: width 0.3s ease; }
+        .price-estimate-box p { font-size: 0.9rem; margin-bottom: 25px; }
+        .consultation-btn { background: var(--accent-color); width: 100%; padding: 18px 20px; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; border-radius: 24px; border: none; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+        .consultation-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        @media (max-width: 992px) { .calculator-layout { grid-template-columns: 1fr; } .price-estimate-box { position: static; margin-top: 40px; } }
     </style>
 </head>
 <body>
-
     <header class="main-header">
         <div class="header-container">
             <div class="header-left">
@@ -34,6 +46,10 @@
                 <a href="/pages/shopify-services.html">Shopify Services</a>
             </nav>
             <div class="header-right">
+                <button class="theme-switcher" id="theme-switcher" title="Toggle Theme">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon" style="display: none;"></i>
+                </button>
                 <a href="/cart/cart.html" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-item-count">0</span>
@@ -46,50 +62,57 @@
     </header>
 
     <main>
-        <section class="page-hero">
+        <div class="page-hero">
             <div class="container">
-                <h1 class="section-title" style="margin-bottom: 10px;">Instant Project Estimate</h1>
-                <p class="impact-subheadline" style="margin-bottom: 0;">Select your project requirements to get a real-time price estimate.</p>
+                <h1 class="section-title" style="margin-bottom: 10px;">Custom Development <span class="highlight-green">Calculator</span></h1>
+                <p class="impact-subheadline" style="margin-top: -20px;">Get an instant, ballpark estimate for your project.</p>
             </div>
-        </section>
+        </div>
 
-        <section class="calculator-section">
-            <div class="container">
-                <form id="price-calculator-form" class="calculator-form">
-                    <div class="form-group">
-                        <label>1. Select Technology</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="tech" value="html" checked> HTML, CSS, JS</label>
-                            <label><input type="radio" name="tech" value="react"> React.js</label>
+        <div class="calculator-layout">
+            <div class="calculator-form">
+                <div class="form-section" data-group="tech">
+                    <h3>1. Select Technology</h3>
+                    <div class="option-box selected" data-value="html">HTML, CSS, JS</div>
+                    <div class="option-box" data-value="react" style="margin-top: 15px;">React / Next.js</div>
+                </div>
+
+                <div class="form-section" data-group="type">
+                    <h3>2. Select Website Type</h3>
+                    <div class="option-box selected" data-value="landing-page">Landing Page</div>
+                    <div class="option-box" data-value="full-website" style="margin-top: 15px;">Full Website</div>
+                </div>
+
+                <div class="form-section" id="pages-section" style="display: none;">
+                    <h3>Number of Pages</h3>
+                    <div class="page-slider-group">
+                        <div class="slider-info">
+                            <span>1 Page</span>
+                            <span id="page-count-display">1</span>
+                            <span>20 Pages</span>
                         </div>
+                        <input type="range" id="page-slider" min="1" max="20" value="1">
                     </div>
-                    <div class="form-group">
-                        <label for="pages">2. Select Number of Pages</label>
-                        <select id="pages" name="pages">
-                            <option value="1">Single Page Website</option>
-                            <option value="3">Up to 3 Pages</option>
-                            <option value="5">Up to 5 Pages</option>
-                            <option value="10">10+ Pages</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>3. Additional Features</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="features" value="ecommerce"> E-commerce Functionality</label>
-                            <label><input type="checkbox" name="features" value="cms"> CMS Integration</label>
-                            <label><input type="checkbox" name="features" value="animations"> Advanced Animations</label>
-                        </div>
-                    </div>
-                    <div class="price-output">
-                        <h3>Estimated Price:</h3>
-                        <div id="estimated-price" class="price-value">₹0</div>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">This is an estimate. We'll provide a final quote after a consultation.</p>
-                    </div>
-                </form>
+                </div>
+
+                <div class="form-section" data-group="integrations">
+                    <h3>3. Add-on Integrations</h3>
+                    <div class="option-box" data-value="seo">Advanced SEO Setup</div>
+                    <div class="option-box" data-value="ecommerce" style="margin-top: 15px;">E-commerce Functionality</div>
+                    <div class="option-box" data-value="cms" style="margin-top: 15px;">CMS Integration</div>
+                </div>
             </div>
-        </section>
+
+            <aside class="price-estimate-box">
+                <h4>Estimated Price</h4>
+                <div class="estimated-price-value" id="estimated-price">₹0</div>
+                <div class="price-bar"><div class="price-bar-fill" id="price-bar-fill"></div></div>
+                <p>This is an estimate. For a detailed quote, please contact us.</p>
+                <a href="https://wa.me/918602555840" target="_blank" class="btn consultation-btn">Book Consultation Now</a>
+            </aside>
+        </div>
     </main>
-
+    
     <footer class="main-footer-v2">
         <div class="container">
             <p>Made with ❤️ by ReadyFlow</p>

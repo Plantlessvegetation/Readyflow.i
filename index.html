@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReadyFlow | Custom Web Development & Digital Solutions</title>
-    <meta name="description" content="ReadyFlow delivers high-quality custom websites, Shopify stores, and premium coded templates.">
-    <meta name="author" content="ReadyFlow">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="homepage-v3">
+<body>
 
     <header class="main-header">
         <div class="header-container">
@@ -25,6 +23,10 @@
                 <a href="/pages/shopify-services.html">Shopify Services</a>
             </nav>
             <div class="header-right">
+                <button class="theme-switcher" id="theme-switcher" title="Toggle Theme">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon" style="display: none;"></i>
+                </button>
                 <a href="/cart/cart.html" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-item-count">0</span>
@@ -51,7 +53,6 @@
                 </div>
             </div>
         </section>
-
         <section class="why-us-section">
             <div class="container">
                 <h2 class="section-title">The ReadyFlow Advantage</h2>
@@ -62,7 +63,6 @@
                 </div>
             </div>
         </section>
-        
         <section class="our-process-section">
             <div class="container">
                 <h2 class="section-title">Our Proven Process</h2>
@@ -74,7 +74,6 @@
                 </div>
             </div>
         </section>
-
         <section class="tech-stack-section">
             <div class="container">
                 <h2 class="section-title">Technologies We Use</h2>
@@ -88,7 +87,6 @@
                 </div>
             </div>
         </section>
-
         <section id="faq" class="faq-section">
             <div class="container">
                 <h2 class="section-title">Frequently Asked Questions</h2>
@@ -99,7 +97,6 @@
                 </div>
             </div>
         </section>
-
         <section id="contact" class="contact-section">
             <div class="container">
                 <h2 class="section-title">Let's Build Something Great</h2>
@@ -112,14 +109,13 @@
             </div>
         </section>
     </main>
-
     <footer class="main-footer-v2">
         <div class="container">
             <p>Made with ❤️ by ReadyFlow</p>
             <small>© 2025 ReadyFlow. All Rights Reserved.</small>
         </div>
     </footer>
-
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/store.js"></script>
 </body>
 </html>
