@@ -18,6 +18,7 @@ const products = [
       { type: 'image', src: '../assets/images/cafe-menu.png', thumb: '../assets/images/cafe-menu.png' },
       { type: 'image', src: '../assets/images/cafe-hours.png', thumb: '../assets/images/cafe-hours.png' },
       { type: 'image', src: '../assets/images/cafe-reviews.png', thumb: '../assets/images/cafe-reviews.png' },
+      { type: 'image', src: '../assets/images/not templates.png', thumb: '../assets/images/not templates.png'},
     ]
   },
   {
@@ -31,8 +32,13 @@ const products = [
     description: 'A high-converting landing page to drive registrations for your next event.',
     useCases: ['Webinar Registrations', 'Conference Sign-ups', 'Workshop Tickets', 'Product Launches'],
     media: [
-        { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Video' },
-        { type: 'image', src: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Image+1', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Image+1' },
+        { type: 'video', src: '../assets/images/event-home.mp4', thumb: '../assets/images/event-home.png' },
+        { type: 'image', src: '../assets/images/event-home.png', thumb: '../assets/images/event-home.png'},
+        { type: 'image', src: '../assets/images/event-detail.png', thumb: '../assets/images/event-detail.png'},
+        { type: 'image', src: '../assets/images/event-registration.png', thumb: '../assets/images/event-registration.png' },
+        { type: 'image', src: '../assets/images/event-host.png', thumb: '../assets/images/event-host.png'},
+        { type: 'image', src: '../assets/images/not templates.png', thumb: '../assets/images/not templates.png'},
+       
     ]
   },
   {
@@ -46,8 +52,12 @@ const products = [
     description: 'An energetic and modern site for personal trainers, gyms, and fitness studios.',
     useCases: ['Personal Trainers', 'Gyms & Fitness Centers', 'Yoga Studios', 'Health Coaches'],
     media: [
-        { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Video' },
-        { type: 'image', src: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Image+1', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Image+1' },
+       { type: 'video', src: '../assets/images/gym-video.mp4', thumb: '../assets/images/gym-home.png'},
+       { type: 'image', src: '../assets/images/gym-home.png', thumb: '../assets/images/gym-home.png'},
+       { type: 'image', src: '../assets/images/gym-trainer.png', thumb: '../assets/images/gym-trainer.png'},
+       { type: 'image', src: '../assets/images/gym-plans.png', thumb: '../assets/images/gym-plans.png'},
+       { type: 'image', src: '../assets/images/gym-connect.png', thumb: '../assets/images/gym-connect.png'},
+       { type: 'image', src: '../assets/images/not templates.png', thumb: '../assets/images/not templates.png'},
     ]
   },
   {
