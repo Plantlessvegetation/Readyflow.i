@@ -61,18 +61,22 @@ const products = [
     ]
   },
   {
-    id: 'freelancer-portfolio',
-    name: 'Freelancer Portfolio',
-    price: 329, // Updated price
-    tags: ['react'],
-    type: 'portfolio',
+    id: 'xyz-computers',
+    name: 'Xyz-computer - contains preloader',
+    price: 529, // Updated price
+    tags: ['html'],
+    type: 'electronics shop',
     pages: '1',
-    image: '../assets/images/freelancer-portfolio.png',
-    description: 'A sleek, modern portfolio to showcase your work and attract clients.',
-    useCases: ['Developers', 'Designers', 'Writers', 'Consultants'],
+    image: '../assets/images/xyz-home.png',
+    description: 'A sleek, modern website give wings to your store.',
+    useCases: ['Shop Oweners', 'Existing Business Persons', 'Sellers', 'Freelancers'],
     media: [
-        { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Video' },
-        { type: 'image', src: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Image+1', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Image+1' },
+        { type: 'video', src: '../assets/images/xyz-computers.mp4', thumb: '../assets/images/xyz-home.png' },
+        { type: 'image', src: '../assets/images/xyz-home.png', thumb: '../assets/images/xyz-home.png' },
+         { type: 'image', src: '../assets/images/xyz-location.png', thumb: '../assets/images/xyz-location.png' },
+          { type: 'image', src: '../assets/images/xyz-offers.png', thumb: '../assets/images/xyz-offers.png' },
+           { type: 'image', src: '../assets/images/xyz-faq.png', thumb: '../assets/images/xyz-faq.png' },
+           { type: 'image', src: '../assets/images/not templates.png', thumb: '../assets/images/not templates.png'},
     ]
   },
   {
