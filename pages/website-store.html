@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header class="main-header">
         <div class="header-container">
             <div class="header-left">
@@ -29,7 +28,6 @@
             </div>
         </div>
     </header>
-
     <div class="store-layout">
         <aside class="store-sidebar">
             <div class="sidebar-header"><h3>Filters</h3><button class="sidebar-close-btn">&times;</button></div>
@@ -41,7 +39,6 @@
             </div>
         </aside>
         <div class="page-overlay"></div>
-
         <main class="product-listing-area">
              <div class="page-hero">
                 <div class="container">
@@ -60,22 +57,20 @@
                         </div>
                     </div>
                 </div>
-                <div id="product-container" class="product-list">
-                    <!-- Products will be dynamically loaded here by store.js -->
-                </div>
+                <div id="product-container" class="product-list"></div>
             </div>
         </main>
     </div>
-
     <footer class="main-footer-v2">
         <div class="container">
             <p>Made with ❤️ by ReadyFlow</p>
             <small>© 2025 ReadyFlow. All Rights Reserved.</small>
         </div>
     </footer>
-
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/products.js"></script> <!-- We need our product list -->
-    <script src="../assets/js/store.js"></script> <!-- This will now build the page -->
+    <!-- Firebase SDK Scripts -->
+    <script src="../assets/js/firebase-config.js"></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script src="../assets/js/products.js"></script>
+    <script type="module" src="../assets/js/store.js"></script>
 </body>
 </html>

@@ -13,38 +13,28 @@
     <div class="login-page-wrapper">
         <div class="container-box">
             <div class="form-container sign-up-container">
-                <form action="#">
+                <form id="signUpForm">
                     <h1>Create Account</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class='bx bxl-google'></i></a>
-                        <a href="#" class="social"><i class='bx bxl-github'></i></a>
-                    </div>
-                    <span>or use your email for registration</span>
                     <div class="input-box">
-                        <input type="text" required placeholder="Username">
+                        <input type="text" required placeholder="Username" id="signup-username">
                     </div>
                     <div class="input-box">
-                        <input type="email" required placeholder="Email">
+                        <input type="email" required placeholder="Email" id="signup-email">
                     </div>
                     <div class="input-box">
-                        <input type="password" required placeholder="Password">
+                        <input type="password" required placeholder="Password" id="signup-password">
                     </div>
                     <button type="submit" class="btn">Sign Up</button>
                 </form>
             </div>
             <div class="form-container sign-in-container">
-                <form action="#">
+                <form id="signInForm">
                     <h1>Sign In</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class='bx bxl-google'></i></a>
-                        <a href="#" class="social"><i class='bx bxl-github'></i></a>
-                    </div>
-                    <span>or use your account</span>
                      <div class="input-box">
-                        <input type="email" required placeholder="Email">
+                        <input type="email" required placeholder="Email" id="signin-email">
                     </div>
                     <div class="input-box">
-                        <input type="password" required placeholder="Password">
+                        <input type="password" required placeholder="Password" id="signin-password">
                     </div>
                     <a href="#">Forgot your password?</a>
                     <button type="submit" class="btn">Sign In</button>
@@ -67,6 +57,8 @@
         </div>
     </div>
 
-    <script src="../assets/js/login.js"></script>
+    <!-- Firebase SDK Scripts -->
+    <script src="../assets/js/firebase-config.js"></script>
+    <script type="module" src="../assets/js/login.js"></script>
 </body>
 </html>
