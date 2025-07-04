@@ -123,13 +123,11 @@
     top: 2px;
 }
 
+/* --- Purchase & Offers Section --- */
 .product-page-purchase {
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     border: 1px solid var(--border-subtle);
 }
 
@@ -137,28 +135,70 @@
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--accent-color);
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.add-to-cart-btn {
-    padding: 16px 32px !important;
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.add-to-cart-btn, .buy-now-btn {
+    width: 100%;
+    padding: 16px 20px !important;
     font-size: 1rem !important;
     min-width: auto !important;
 }
 
+/* --- Offers Section --- */
+.offers-section {
+    margin-top: 25px;
+    background: rgba(39, 174, 96, 0.1);
+    border: 1px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+body.light-theme .offers-section {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.offers-section h4 {
+    color: var(--accent-color);
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+}
+
+.offers-section p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.offers-section .coupon-code {
+    margin-top: 10px;
+    background: var(--bg-primary);
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 700;
+    display: inline-block;
+    border: 1px dashed var(--border-subtle);
+}
+
+
 /* --- MOBILE RESPONSIVE FIX --- */
 @media (max-width: 992px) {
     .product-container {
-        /* Change to a single column layout on smaller screens */
         grid-template-columns: 1fr;
     }
     .product-details {
-        /* Add some space between the media and the details on mobile */
         margin-top: 40px;
     }
     .product-page-title,
     .product-page-description,
     .product-details h3,
     .use-case-list {
-        text-align: left; /* Ensure text remains left-aligned */
+        text-align: left;
     }
 }

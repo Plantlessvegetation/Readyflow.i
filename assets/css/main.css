@@ -75,3 +75,26 @@ body.light-theme .main-header { background: rgba(255, 255, 255, 0.8); }
     .main-nav a:last-child { border-bottom: none; }
     .mobile-nav-toggle { display: block; }
 }
+
+/* --- ADD TO CART NOTIFICATION POP-UP --- */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-color);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+    bottom: 30px;
+}

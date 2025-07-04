@@ -1,6 +1,23 @@
 // This script handles sitewide functionality like theme switching and mobile navigation.
 
+// --- CART LOGIC ---
+function getCart() {
+    // Get the cart from localStorage, or return an empty list if it doesn't exist.
+    return JSON.parse(localStorage.getItem('readyflow_cart')) || [];
+}
+
+function updateCartIcon() {
+    const cart = getCart();
+    const cartCountElement = document.getElementById('cart-item-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = cart.length;
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Update the cart icon as soon as the page loads
+    updateCartIcon();
 
     // --- THEME SWITCHER LOGIC ---
     const themeSwitcher = document.getElementById('theme-switcher');
@@ -8,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sunIcon = themeSwitcher.querySelector('.fa-sun');
         const moonIcon = themeSwitcher.querySelector('.fa-moon');
         
-        // Function to apply the saved theme on page load
         const applyTheme = (theme) => {
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
@@ -21,13 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Check for saved theme in localStorage
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
             applyTheme(currentTheme);
         }
 
-        // Add click event to toggle theme
         themeSwitcher.addEventListener('click', () => {
             let theme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
             localStorage.setItem('theme', theme);
@@ -65,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const answer = item.querySelector('.faq-answer');
                 const wasActive = item.classList.contains('active');
                 
-                // Optional: Close other FAQs when one is opened
                 faqItems.forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.classList.remove('active');
@@ -73,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Toggle the clicked FAQ
                 if (wasActive) {
                     item.classList.remove('active');
                     answer.style.maxHeight = null;
@@ -90,11 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
 
     navLinks.forEach(link => {
-        // Handle homepage link
-        if (link.getAttribute('href') === '/index.html' && currentPath === '/index.html') {
-            document.querySelector('.home-icon-btn').classList.add('active');
+        if (link.getAttribute('href') === '/index.html' && (currentPath === '/index.html' || currentPath === '/')) {
+             document.querySelector('.home-icon-btn').classList.add('active');
         }
-        // Handle other page links
         if (currentPath.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/index.html') {
             link.classList.add('active');
         }

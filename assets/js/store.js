@@ -39,55 +39,85 @@ document.addEventListener('DOMContentLoaded', () => {
         const product = products.find(p => p.id === productId);
 
         if (product) {
-            // Update the page title
             document.title = `${product.name} - ReadyFlow`;
-
-            // Generate the HTML for the product details
             const detailHTML = `
                 <div class="product-media">
                     <div class="main-media-display">
-                        <video class="showcased-video" controls autoplay loop muted playsinline style="display: ${product.media[0].type === 'video' ? 'block' : 'none'};">
-                            <source src="${product.media[0].src}" type="video/mp4">
-                        </video>
+                        <video class="showcased-video" controls autoplay loop muted playsinline style="display: ${product.media[0].type === 'video' ? 'block' : 'none'};"><source src="${product.media[0].src}" type="video/mp4"></video>
                         <img src="${product.media[0].type === 'image' ? product.media[0].src : ''}" alt="${product.name}" class="showcased-image" style="display: ${product.media[0].type === 'image' ? 'block' : 'none'};">
                     </div>
-                    <div class="thumbnail-gallery">
-                        ${product.media.map((item, index) => `
-                            <img src="${item.thumb}" alt="Thumbnail ${index + 1}" class="thumbnail ${index === 0 ? 'active' : ''}" data-type="${item.type}" data-src="${item.src}">
-                        `).join('')}
-                    </div>
+                    <div class="thumbnail-gallery">${product.media.map((item, index) => `<img src="${item.thumb}" alt="Thumbnail ${index + 1}" class="thumbnail ${index === 0 ? 'active' : ''}" data-type="${item.type}" data-src="${item.src}">`).join('')}</div>
                 </div>
                 <div class="product-details">
                     <div class="tech-tags">${product.tags.map(tag => `<span class="tag ${tag}-tag">${tag.toUpperCase()}</span>`).join('')}</div>
                     <h1 class="product-page-title">${product.name}</h1>
                     <p class="product-page-description">${product.description}</p>
                     <h3>Best For:</h3>
-                    <ul class="use-case-list">
-                        ${product.useCases.map(useCase => `<li>${useCase}</li>`).join('')}
-                    </ul>
+                    <ul class="use-case-list">${product.useCases.map(useCase => `<li>${useCase}</li>`).join('')}</ul>
                     <div class="product-page-purchase">
-                        <span class="product-page-price">₹${product.price}</span>
-                        <button class="btn btn-primary add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                        <div class="product-page-price">₹${product.price}</div>
+                        <div class="button-group">
+                            <button class="btn btn-secondary add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                            <button class="btn btn-primary buy-now-btn" data-id="${product.id}">Buy Now</button>
+                        </div>
+                    </div>
+                    <div class="offers-section">
+                        <h4><i class="fas fa-tags"></i> Special Offers</h4>
+                        <p>Sign up to get 50% off on orders above ₹999!</p>
+                        <div class="coupon-code">Use Code: <strong>READY50</strong></div>
                     </div>
                 </div>
             `;
             productDetailContainer.innerHTML = detailHTML;
-            
-            // Re-run the gallery logic now that the elements exist
             initializeProductGallery();
-
+            initializeAddToCart();
         } else {
             productDetailContainer.innerHTML = '<p>Product not found. Please return to the <a href="website-store.html">store</a>.</p>';
         }
     }
 
-    // --- SHARED FUNCTIONS ---
+    // --- CART FUNCTIONS ---
+    function initializeAddToCart() {
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', (e) => {
+                const productId = e.target.dataset.id;
+                addToCart(productId);
+            });
+        }
+    }
 
+    function addToCart(productId) {
+        let cart = getCart();
+        if (!cart.find(item => item.id === productId)) {
+            cart.push({ id: productId, quantity: 1 });
+            localStorage.setItem('readyflow_cart', JSON.stringify(cart));
+            updateCartIcon();
+            showToastNotification(`${products.find(p => p.id === productId).name} has been added to your cart!`);
+        } else {
+            showToastNotification('This item is already in your cart.');
+        }
+    }
+
+    function showToastNotification(message) {
+        let toast = document.querySelector('.toast-notification');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000); // Hide after 3 seconds
+    }
+
+    // --- SHARED FUNCTIONS ---
     function initializeProductGallery() {
         const thumbnails = document.querySelectorAll('.thumbnail');
         const mainImage = document.querySelector('.showcased-image');
         const mainVideo = document.querySelector('.showcased-video');
-
         if (thumbnails.length > 0 && (mainImage || mainVideo)) {
             thumbnails.forEach(thumb => {
                 thumb.addEventListener('click', () => {
