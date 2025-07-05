@@ -1,7 +1,8 @@
 // This file acts as our central database for all website products.
 // To add a new product, simply copy one of the objects and change the details.
 
-export const products = [ // Added export
+// Changed from 'export const products' to 'window.products' for global access
+window.products = [ 
   {
     id: 'cafe-business',
     name: 'Cafe & Small Business',
