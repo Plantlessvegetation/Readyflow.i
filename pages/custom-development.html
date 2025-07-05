@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../assets/css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* This style block remains here as it seems specific to this page and might override main.css */
         .page-hero { background-color: var(--bg-secondary); padding: 60px 0; }
         .calculator-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 60px; max-width: 1200px; margin: 80px auto; padding: 0 25px; }
         .calculator-form h3 { font-size: 1.8rem; margin-bottom: 20px; }
@@ -50,11 +51,13 @@
                     <i class="fas fa-sun"></i>
                     <i class="fas fa-moon" style="display: none;"></i>
                 </button>
-                <a href="/pages/login.html" class="btn btn-secondary login-signup-btn" id="login-signup-btn">Login / Sign Up</a>
                 <a href="/cart/cart.html" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-item-count">0</span>
                 </a>
+                <button class="user-profile-toggle" id="user-profile-toggle" aria-label="User Profile">
+                    <i class="fas fa-user-circle"></i>
+                </button>
                 <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -62,6 +65,17 @@
         </div>
     </header>
 
+    <aside class="user-sidebar" id="user-sidebar">
+        <div class="sidebar-header">
+            <h3>Account</h3>
+            <button class="user-sidebar-close-btn" id="user-sidebar-close-btn">&times;</button>
+        </div>
+        <div class="sidebar-content" id="user-sidebar-content">
+            </div>
+    </aside>
+
+    <div class="page-overlay" id="page-overlay"></div>
+    
     <main>
         <div class="page-hero">
             <div class="container">
@@ -120,19 +134,9 @@
             <small>© 2025 ReadyFlow. All Rights Reserved.</small>
         </div>
     </footer>
-    <div class="modal-overlay" id="login-success-modal">
-        <div class="modal-box">
-            <button class="modal-close-btn" id="login-success-close-btn">&times;</button>
-            <h3><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i>Login Successful!</h3>
-            <p>You have successfully logged in. Welcome back!</p>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" id="login-success-home-btn">Return to Home</button>
-            </div>
-        </div>
-    </div>
     <script type="module" src="../assets/js/firebase-config.js"></script>
     <script type="module" src="../assets/js/login.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script type="module" src="../assets/js/custom-price-calculator.js"></script>
-    </body>
+</body>
 </html>

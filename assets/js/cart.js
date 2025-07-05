@@ -5,7 +5,6 @@ import { getCart, updateCartIcon } from './main.js';
 import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
 import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Import onAuthStateChanged
-import { upsellPlans, getUpsellPlanPrice } from './upsells.js'; // NEW: Import upsell data and helper
 
 document.addEventListener('DOMContentLoaded', async () => { // Keep async for other event listeners
     const cartItemsContainer = document.getElementById('cart-items-container');
@@ -49,35 +48,20 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         }
 
         let cartHTML = '';
-        let subtotal = 0; // This is the total for display and final discount calculation
+        let subtotal = 0;
 
         for (const cartItem of cart) {
             const product = products.find(p => p.id === cartItem.id);
             if (product) {
-                let itemPrice = product.price;
-                let upsellName = '';
-
-                // NEW: Calculate price based on upsell
-                if (cartItem.upsellId && cartItem.upsellId !== 'none') {
-                    itemPrice = product.price / 2; // Halve template price
-                    const upsellCost = getUpsellPlanPrice(cartItem.upsellId);
-                    itemPrice += upsellCost;
-                    const upsell = upsellPlans.find(p => p.id === cartItem.upsellId);
-                    if (upsell) {
-                        upsellName = `<span class="cart-item-upsell-name">(${upsell.name})</span>`;
-                    }
-                }
-                
-                subtotal += itemPrice; // Still add the itemPrice after potential upsell calculation
-
+                subtotal += product.price;
                 cartHTML += `
-                    <div class="cart-item" data-id="${product.id}" data-upsell-id="${cartItem.upsellId || 'none'}">
+                    <div class="cart-item" data-id="${product.id}">
                         <a href="../pages/product-detail.html?id=${product.id}" class="cart-item-img-link">
                             <img src="${product.image}" alt="${product.name}" class="cart-item-img" onerror="this.src='https://placehold.co/100x75/1A202C/FFFFFF?text=...'">
                         </a>
                         <div class="cart-item-details">
-                            <h3><a href="../pages/product-detail.html?id=${product.id}">${product.name} ${upsellName}</a></h3>
-                            <p>₹${itemPrice.toLocaleString('en-IN')}</p>
+                            <h3><a href="../pages/product-detail.html?id=${product.id}">${product.name}</a></h3>
+                            <p>₹${product.price}</p>
                         </div>
                         <button class="cart-item-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
                     </div>
@@ -94,30 +78,14 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         addRemoveListeners();
     }
 
-    function handleCouponDisplay(currentCartSubtotal) { // Renamed parameter for clarity
-        let total = currentCartSubtotal;
+    function handleCouponDisplay(subtotal) {
+        let total = subtotal;
         let discount = 0;
         const appliedCoupon = localStorage.getItem('applied_coupon');
 
-        // NEW: Calculate subtotal for minSpend check, excluding upsell prices
-        let subtotalForMinSpendCheck = 0;
-        const cartItems = JSON.parse(localStorage.getItem('readyflow_cart')) || []; // Get current cart for calculation
-
-        cartItems.forEach(item => {
-            const product = products.find(p => p.id === item.id);
-            if (product) {
-                if (item.upsellId && item.upsellId !== 'none') {
-                    subtotalForMinSpendCheck += product.price / 2; // Add halved template price
-                } else {
-                    subtotalForMinSpendCheck += product.price; // Add full template price
-                }
-            }
-        });
-
-
-        if (appliedCoupon === COUPON.code && subtotalForMinSpendCheck >= COUPON.minSpend) { // Use new subtotal for minSpend check
-            discount = currentCartSubtotal * COUPON.discount; // Apply discount to full subtotal
-            total = currentCartSubtotal - discount;
+        if (appliedCoupon === COUPON.code && subtotal >= COUPON.minSpend) {
+            discount = subtotal * COUPON.discount;
+            total = subtotal - discount;
 
             promoMessageEl.className = 'promo-message success';
             promoMessageEl.textContent = `Success! "${COUPON.code}" applied.`;
@@ -133,10 +101,10 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             promoCodeInput.disabled = false;
             applyPromoBtn.disabled = false;
 
-            if (subtotalForMinSpendCheck < COUPON.minSpend) { // Use new subtotal for minSpend check
-                const needed = COUPON.minSpend - subtotalForMinSpendCheck;
+            if (subtotal < COUPON.minSpend) {
+                const needed = COUPON.minSpend - subtotal;
                 promoMessageEl.className = 'promo-message info';
-                promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more (excluding add-ons) to use code <strong>${COUPON.code}</strong> for 50% off!`;
+                promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more to use code <strong>${COUPON.code}</strong> for 50% off!`;
             } else {
                 promoMessageEl.className = 'promo-message';
                 promoMessageEl.textContent = `Have a promo code? Enter it above.`;
@@ -148,21 +116,10 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
 
     async function applyCoupon() {
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
-        // The subtotal calculation here needs to reflect the one used in handleCouponDisplay for minSpendCheck
-        // We'll duplicate the logic for direct use in this function call, or refactor if needed more broadly.
-        let subtotalForMinSpendCheck = 0;
-        const cart = await getCart(); // Fetch current cart items
-        cart.forEach(item => {
+        const subtotal = (await getCart()).reduce((acc, item) => {
             const product = products.find(p => p.id === item.id);
-            if (product) {
-                if (item.upsellId && item.upsellId !== 'none') {
-                    subtotalForMinSpendCheck += product.price / 2; // Add halved template price
-                } else {
-                    subtotalForMinSpendCheck += product.price; // Add full template price
-                }
-            }
-        });
-
+            return acc + (product ? product.price : 0);
+        }, 0);
 
         if (enteredCode !== COUPON.code) {
             promoMessageEl.className = 'promo-message error';
@@ -170,15 +127,25 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             return;
         }
 
-        if (subtotalForMinSpendCheck < COUPON.minSpend) { // Use subtotalForMinSpendCheck
+        if (subtotal < COUPON.minSpend) {
             promoMessageEl.className = 'promo-message error';
-            promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} (excluding add-ons) to use this code.`;
+            promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} to use this code.`;
             return;
         }
 
-        // If eligible, store coupon and trigger login modal
-        localStorage.setItem('applied_coupon', COUPON.code);
-        showLoginModal();
+        // Check if the user is already logged in using Firebase auth
+        if (auth.currentUser) {
+            // User is logged in, directly apply the coupon
+            localStorage.setItem('applied_coupon', COUPON.code);
+            await renderCart(); // Re-render cart to show applied discount and update totals
+            promoMessageEl.className = 'promo-message success';
+            promoMessageEl.textContent = `Success! "${COUPON.code}" applied.`;
+            promoCodeInput.disabled = true;
+            applyPromoBtn.disabled = true;
+        } else {
+            // User is not logged in, prompt them to login
+            showLoginModal();
+        }
     }
 
     function showLoginModal() {
@@ -204,19 +171,16 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         removeButtons.forEach(button => {
             button.addEventListener('click', async (e) => {
                 const productId = e.currentTarget.closest('.cart-item').dataset.id;
-                const upsellId = e.currentTarget.closest('.cart-item').dataset.upsellId || 'none'; // Get upsellId
-                await removeFromCart(productId, upsellId); // Pass upsellId to removeFromCart
+                await removeFromCart(productId);
             });
         });
     }
 
-    async function removeFromCart(productId, upsellIdToRemove) { // Modified to accept upsellId
+    async function removeFromCart(productId) {
         let cart = await getCart();
-        // Filter out the specific item (product + upsell combination)
-        const updatedCart = cart.filter(item => !(item.id === productId && (item.upsellId || 'none') === upsellIdToRemove));
+        const updatedCart = cart.filter(item => item.id !== productId);
 
-        if (auth.currentUser) { // Use auth.currentUser directly
-            // User is logged in, save to Firestore
+        if (auth.currentUser) {
             const cartRef = doc(db, 'carts', auth.currentUser.uid);
             try {
                 if (updatedCart.length > 0) {
@@ -235,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         }
 
         await renderCart();
-        await updateCartIcon(); // Always update cart icon on auth state change
+        await updateCartIcon();
     }
 
     // IMPORTANT: Call renderCart and updateCartIcon only after Firebase auth state is known
@@ -245,7 +209,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         if (window.location.pathname.includes('/cart/cart.html')) {
             await renderCart();
         }
-        await updateCartIcon();
+        await updateCartIcon(); // Always update cart icon on auth state change
     });
 
     // We are removing the direct call to renderCart from DOMContentLoaded.

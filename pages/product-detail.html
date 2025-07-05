@@ -23,12 +23,26 @@
             </nav>
             <div class="header-right">
                 <button class="theme-switcher" id="theme-switcher" title="Toggle Theme"><i class="fas fa-sun"></i><i class="fas fa-moon" style="display: none;"></i></button>
-                <a href="/pages/login.html" class="btn btn-secondary login-signup-btn" id="login-signup-btn">Login / Sign Up</a>
                 <a href="../cart/cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i><span id="cart-item-count">0</span></a>
+                <button class="user-profile-toggle" id="user-profile-toggle" aria-label="User Profile">
+                    <i class="fas fa-user-circle"></i>
+                </button>
                 <button class="mobile-nav-toggle" aria-label="Toggle Navigation"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </header>
+
+    <aside class="user-sidebar" id="user-sidebar">
+        <div class="sidebar-header">
+            <h3>Account</h3>
+            <button class="user-sidebar-close-btn" id="user-sidebar-close-btn">&times;</button>
+        </div>
+        <div class="sidebar-content" id="user-sidebar-content">
+            </div>
+    </aside>
+
+    <div class="page-overlay" id="page-overlay"></div>
+
     <main class="product-page-main">
         <div id="product-detail-container" class="product-container">
             </div>
@@ -39,32 +53,10 @@
             <small>© 2025 ReadyFlow. All Rights Reserved.</small>
         </div>
     </footer>
-    <div class="modal-overlay" id="login-success-modal">
-        <div class="modal-box">
-            <button class="modal-close-btn" id="login-success-close-btn">&times;</button>
-            <h3><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i>Login Successful!</h3>
-            <p>You have successfully logged in. Welcome back!</p>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" id="login-success-home-btn">Return to Home</button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="upsell-info-modal">
-        <div class="modal-box">
-            <button class="modal-close-btn" id="upsell-info-close-btn">&times;</button>
-            <h3 id="upsell-info-modal-title"></h3>
-            <p id="upsell-info-modal-description"></p>
-            <ul id="upsell-info-modal-offerings" class="use-case-list">
-                </ul>
-            <div class="modal-buttons" style="display: none;">
-                </div>
-        </div>
-    </div>
-
     <script type="module" src="../assets/js/firebase-config.js"></script>
     <script type="module" src="../assets/js/login.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script type="module" src="../assets/js/products.js"></script>
-    <script type="module" src="../assets/js/upsells.js"></script> <script type="module" src="../assets/js/store.js"></script>
+    <script type="module" src="../assets/js/store.js"></script>
 </body>
 </html>
