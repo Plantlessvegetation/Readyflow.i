@@ -101,31 +101,18 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
 
         // NEW: Calculate subtotal for minSpend check, excluding upsell prices
         let subtotalForMinSpendCheck = 0;
-        // Use getCart() to ensure latest cart data, as localStorage might not be synced immediately
-        // but for coupon display, relying on rendered cart content might be sufficient
-        const cartItemsFromStorage = JSON.parse(localStorage.getItem('readyflow_cart')) || []; 
+        const cartItems = JSON.parse(localStorage.getItem('readyflow_cart')) || []; // Get current cart for calculation
 
-        console.log('--- Calculating subtotalForMinSpendCheck for Coupon Display ---'); // Debug
-        cartItemsFromStorage.forEach(item => { // Use cartItemsFromStorage directly
+        cartItems.forEach(item => {
             const product = products.find(p => p.id === item.id);
             if (product) {
-                console.log(`Display - Item ID: ${item.id}, Upsell ID: ${item.upsellId}`); // Debug
-                console.log(`Display - Product original price: ${product.price}`); // Debug
-
                 if (item.upsellId && item.upsellId !== 'none') {
-                    const halvedPrice = product.price / 2;
-                    subtotalForMinSpendCheck += halvedPrice; // Add halved template price
-                    console.log(`Display - Added halved price (${halvedPrice}) for upsell item.`); // Debug
+                    subtotalForMinSpendCheck += product.price / 2; // Add halved template price
                 } else {
                     subtotalForMinSpendCheck += product.price; // Add full template price
-                    console.log(`Display - Added full price (${product.price}) for non-upsell item.`); // Debug
                 }
-                console.log(`Display - Current subtotalForMinSpendCheck: ${subtotalForMinSpendCheck}`); // Debug
-            } else {
-                console.warn(`Display - Product with ID ${item.id} not found in products list.`); // Debug
             }
         });
-        console.log(`Display - Final subtotalForMinSpendCheck: ${subtotalForMinSpendCheck}`); // Debug
 
 
         if (appliedCoupon === COUPON.code && subtotalForMinSpendCheck >= COUPON.minSpend) { // Use new subtotal for minSpend check
@@ -140,30 +127,19 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             promoCodeInput.disabled = true;
             applyPromoBtn.disabled = true;
         } else {
-            // DO NOT removeItem('applied_coupon') here. Only update UI message.
+            localStorage.removeItem('applied_coupon');
             discountRow.style.display = 'none';
-            promoCodeInput.disabled = false; // Enable input
-            applyPromoBtn.disabled = false; // Enable button
-            promoCodeInput.value = appliedCoupon === COUPON.code ? COUPON.code : ''; // Keep code if previously set
+            promoCodeInput.value = '';
+            promoCodeInput.disabled = false;
+            applyPromoBtn.disabled = false;
 
-            if (appliedCoupon === COUPON.code) { // If coupon was set, but now ineligible
-                 if (subtotalForMinSpendCheck < COUPON.minSpend) {
-                    const needed = COUPON.minSpend - subtotalForMinSpendCheck;
-                    promoMessageEl.className = 'promo-message info';
-                    promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more (excluding add-ons) to use code <strong>${COUPON.code}</strong> for 50% off!`;
-                } else { // This case should ideally not be reached if appliedCoupon is COUPON.code and meets minSpend
-                    promoMessageEl.className = 'promo-message';
-                    promoMessageEl.textContent = `Coupon "${COUPON.code}" is not applicable right now.`;
-                }
-            } else { // No coupon was applied
+            if (subtotalForMinSpendCheck < COUPON.minSpend) { // Use new subtotal for minSpend check
                 const needed = COUPON.minSpend - subtotalForMinSpendCheck;
-                if (needed > 0) {
-                     promoMessageEl.className = 'promo-message info';
-                     promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more (excluding add-ons) to use code <strong>${COUPON.code}</strong> for 50% off!`;
-                } else { // Eligible but not applied yet
-                     promoMessageEl.className = 'promo-message';
-                     promoMessageEl.textContent = `Have a promo code? Enter it above.`;
-                }
+                promoMessageEl.className = 'promo-message info';
+                promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more (excluding add-ons) to use code <strong>${COUPON.code}</strong> for 50% off!`;
+            } else {
+                promoMessageEl.className = 'promo-message';
+                promoMessageEl.textContent = `Have a promo code? Enter it above.`;
             }
         }
 
@@ -173,44 +149,30 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     async function applyCoupon() {
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
         // The subtotal calculation here needs to reflect the one used in handleCouponDisplay for minSpendCheck
+        // We'll duplicate the logic for direct use in this function call, or refactor if needed more broadly.
         let subtotalForMinSpendCheck = 0;
         const cart = await getCart(); // Fetch current cart items
-        
-        console.log('--- Calculating subtotalForMinSpendCheck in applyCoupon ---'); // Debug
         cart.forEach(item => {
             const product = products.find(p => p.id === item.id);
             if (product) {
-                console.log(`ApplyCoupon - Item ID: ${item.id}, Upsell ID: ${item.upsellId}`); // Debug
-                console.log(`ApplyCoupon - Product original price: ${product.price}`); // Debug
                 if (item.upsellId && item.upsellId !== 'none') {
-                    const halvedPrice = product.price / 2;
-                    subtotalForMinSpendCheck += halvedPrice;
-                    console.log(`ApplyCoupon - Added halved price (${halvedPrice}) for upsell item.`); // Debug
+                    subtotalForMinSpendCheck += product.price / 2; // Add halved template price
                 } else {
-                    subtotalForMinSpendCheck += product.price;
-                    console.log(`ApplyCoupon - Added full price (${product.price}) for non-upsell item.`); // Debug
+                    subtotalForMinSpendCheck += product.price; // Add full template price
                 }
-                console.log(`ApplyCoupon - Current subtotalForMinSpendCheck: ${subtotalForMinSpendCheck}`); // Debug
-            } else {
-                console.warn(`ApplyCoupon - Product with ID ${item.id} not found in products list.`); // Debug
             }
         });
-        console.log(`ApplyCoupon - Final subtotalForMinSpendCheck: ${subtotalForMinSpendCheck}`); // Debug
 
 
         if (enteredCode !== COUPON.code) {
             promoMessageEl.className = 'promo-message error';
             promoMessageEl.textContent = 'Invalid promo code.';
-            localStorage.removeItem('applied_coupon'); // Explicitly remove on invalid code
-            handleCouponDisplay(0); // Re-render message (subtotal doesn't matter here)
             return;
         }
 
         if (subtotalForMinSpendCheck < COUPON.minSpend) { // Use subtotalForMinSpendCheck
             promoMessageEl.className = 'promo-message error';
             promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} (excluding add-ons) to use this code.`;
-            localStorage.removeItem('applied_coupon'); // Remove if minimum not met on explicit apply
-            handleCouponDisplay(0); // Re-render message
             return;
         }
 
@@ -232,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideLoginModal);
     if (continueBtn) {
         continueBtn.addEventListener('click', () => {
-            // localStorage.setItem('applied_coupon', COUPON.code); // This is already set in applyCoupon
+            localStorage.setItem('applied_coupon', COUPON.code);
             window.location.href = '../pages/login.html';
         });
     }
@@ -272,19 +234,8 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             console.log('Item removed from localStorage cart.');
         }
 
-        // After removing, clear applied coupon from localStorage if cart becomes empty or coupon becomes ineligible
-        const currentCart = await getCart(); // Get the very latest cart state
-        if (currentCart.length === 0) {
-            localStorage.removeItem('applied_coupon');
-        } else {
-            // Re-evaluate eligibility for remaining items.
-            // A simple way is to re-render cart which calls handleCouponDisplay
-            // or explicitly call handleCouponDisplay with the new subtotal.
-            // renderCart will call handleCouponDisplay anyway, so this is fine.
-        }
-
         await renderCart();
-        await updateCartIcon();
+        await updateCartIcon(); // Always update cart icon on auth state change
     }
 
     // IMPORTANT: Call renderCart and updateCartIcon only after Firebase auth state is known
