@@ -28,16 +28,16 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     };
 
     async function renderCart() {
-        console.log('--- Starting cart render process in renderCart() ---'); // Added log
-        console.log('renderCart: Current user (auth.currentUser):', auth.currentUser); // Added log
+        console.log('--- Starting cart render process in renderCart() ---');
+        console.log('renderCart: Current user (auth.currentUser):', auth.currentUser);
         
         const cart = await getCart(); // Get the cart data
-        console.log('renderCart: Cart data received from getCart():', cart); // Added log
+        console.log('renderCart: Cart data received from getCart():', cart);
         
-        console.log('renderCart: Available products (from products.js):', products); // Added log
+        console.log('renderCart: Available products (from products.js):', products);
 
         if (cart.length === 0) {
-            console.log('renderCart: Cart is empty. Displaying empty cart message.'); // Added log
+            console.log('renderCart: Cart is empty. Displaying empty cart message.');
             cartItemsContainer.innerHTML = `
                 <div class="empty-cart-message">
                     <p>Your cart is currently empty.</p>
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             `;
             if(cartSummary) {
                 cartSummary.style.display = 'none';
-                console.log('renderCart: Cart summary hidden.'); // Added log
+                console.log('renderCart: Cart summary hidden.');
             }
             return;
         }
@@ -71,12 +71,12 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
                     </div>
                 `;
             } else {
-                console.warn(`renderCart: Product with ID ${cartItem.id} not found in products.js. Skipping.`); // Added log for missing product
+                console.warn(`renderCart: Product with ID ${cartItem.id} not found in products.js. Skipping.`);
             }
         }
         
-        console.log('renderCart: Generated cart HTML:', cartHTML); // Added log
-        console.log('renderCart: Calculated subtotal:', subtotal); // Added log
+        console.log('renderCart: Generated cart HTML:', cartHTML);
+        console.log('renderCart: Calculated subtotal:', subtotal);
 
         cartItemsContainer.innerHTML = cartHTML;
         cartSubtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         handleCouponDisplay(subtotal);
 
         cartSummary.style.display = 'block';
-        console.log('renderCart: Cart summary displayed.'); // Added log
+        console.log('renderCart: Cart summary displayed.');
         addRemoveListeners();
     }
 
@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         let total = subtotal;
         let discount = 0;
         const appliedCoupon = localStorage.getItem('applied_coupon');
-        console.log('handleCouponDisplay: Subtotal:', subtotal); // Added log
-        console.log('handleCouponDisplay: Applied coupon from localStorage:', appliedCoupon); // Added log
+        console.log('handleCouponDisplay: Subtotal:', subtotal);
+        console.log('handleCouponDisplay: Applied coupon from localStorage:', appliedCoupon);
 
         if (appliedCoupon === COUPON.code && subtotal >= COUPON.minSpend) {
             discount = subtotal * COUPON.discount;
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             promoCodeInput.value = COUPON.code;
             promoCodeInput.disabled = true;
             applyPromoBtn.disabled = true;
-            console.log('handleCouponDisplay: Coupon applied. Discount:', discount, 'Total:', total); // Added log
+            console.log('handleCouponDisplay: Coupon applied. Discount:', discount, 'Total:', total);
         } else {
             localStorage.removeItem('applied_coupon');
             discountRow.style.display = 'none';
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
                 const needed = COUPON.minSpend - subtotal;
                 promoMessageEl.className = 'promo-message info';
                 promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more to use code <strong>${COUPON.code}</strong> for 50% off!`;
-                console.log('handleCouponDisplay: Coupon not applied. Need more to spend:', needed); // Added log
+                console.log('handleCouponDisplay: Coupon not applied. Need more to spend:', needed);
             } else {
                 promoMessageEl.className = 'promo-message';
                 promoMessageEl.textContent = `Have a promo code? Enter it above.`;
-                console.log('handleCouponDisplay: No coupon applied or not eligible.'); // Added log
+                console.log('handleCouponDisplay: No coupon applied or not eligible.');
             }
         }
 
@@ -130,31 +130,31 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     }
 
     async function applyCoupon() {
-        console.log('applyCoupon: Apply coupon button clicked.'); // Added log
+        console.log('applyCoupon: Apply coupon button clicked.');
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
         const subtotal = (await getCart()).reduce((acc, item) => {
             const product = products.find(p => p.id === item.id);
             return acc + (product ? product.price : 0);
         }, 0);
-        console.log('applyCoupon: Entered code:', enteredCode, 'Current Subtotal:', subtotal); // Added log
+        console.log('applyCoupon: Entered code:', enteredCode, 'Current Subtotal:', subtotal);
 
 
         if (enteredCode !== COUPON.code) {
             promoMessageEl.className = 'promo-message error';
             promoMessageEl.textContent = 'Invalid promo code.';
-            console.log('applyCoupon: Invalid promo code entered.'); // Added log
+            console.log('applyCoupon: Invalid promo code entered.');
             return;
         }
 
         if (subtotal < COUPON.minSpend) {
             promoMessageEl.className = 'promo-message error';
             promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} to use this code.`;
-            console.log('applyCoupon: Subtotal too low for coupon.'); // Added log
+            console.log('applyCoupon: Subtotal too low for coupon.');
             return;
         }
 
         showLoginModal();
-        console.log('applyCoupon: Showing login modal.'); // Added log
+        console.log('applyCoupon: Showing login modal.');
     }
 
     function showLoginModal() {
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideLoginModal);
     if (continueBtn) {
         continueBtn.addEventListener('click', () => {
-            console.log('Modal: Continue to Login clicked. Setting applied_coupon in localStorage.'); // Added log
+            console.log('Modal: Continue to Login clicked. Setting applied_coupon in localStorage.');
             localStorage.setItem('applied_coupon', COUPON.code);
             window.location.href = '../pages/login.html';
         });
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         removeButtons.forEach(button => {
             button.addEventListener('click', async (e) => {
                 const productId = e.currentTarget.closest('.cart-item').dataset.id;
-                console.log('Remove button clicked for product ID:', productId); // Added log
+                console.log('Remove button clicked for product ID:', productId);
                 await removeFromCart(productId);
             });
         });
@@ -190,17 +190,17 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     async function removeFromCart(productId) {
         let cart = await getCart();
         const updatedCart = cart.filter(item => item.id !== productId);
-        console.log('removeFromCart: Original cart:', cart, 'Updated cart:', updatedCart); // Added log
+        console.log('removeFromCart: Original cart:', cart, 'Updated cart:', updatedCart);
 
         if (auth.currentUser) {
             const cartRef = doc(db, 'carts', auth.currentUser.uid);
             try {
                 if (updatedCart.length > 0) {
                     await setDoc(cartRef, { items: updatedCart });
-                    console.log('removeFromCart: Cart updated in Firestore for user:', auth.currentUser.uid); // Added log
+                    console.log('removeFromCart: Cart updated in Firestore for user:', auth.currentUser.uid);
                 } else {
                     await deleteDoc(cartRef);
-                    console.log('removeFromCart: Cart emptied in Firestore for user:', auth.currentUser.uid); // Added log
+                    console.log('removeFromCart: Cart emptied in Firestore for user:', auth.currentUser.uid);
                 }
             } catch (error) {
                 console.error('Error removing item from Firestore cart:', error);
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
             }
         } else {
             localStorage.setItem('readyflow_cart', JSON.stringify(updatedCart));
-            console.log('removeFromCart: Item removed from localStorage cart.'); // Added log
+            console.log('removeFromCart: Item removed from localStorage cart.');
         }
 
         await renderCart();
@@ -219,11 +219,18 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
     // This listener ensures the cart is rendered with the correct data (Firestore or localStorage)
     // as soon as the authentication state is known on the cart page.
     onAuthStateChanged(auth, async (user) => {
-        console.log('onAuthStateChanged in cart.js: User state changed. Current user:', user ? user.uid : 'null'); // Added log
-        if (window.location.pathname.includes('/cart/cart.html')) {
-            console.log('onAuthStateChanged: Current page is cart.html. Calling renderCart().'); // Added log
+        console.log('onAuthStateChanged in cart.js: User state changed. Current user:', user ? user.uid : 'null');
+        
+        // --- NEW DEBUGGING LOGS ---
+        console.log('onAuthStateChanged: window.location.pathname is:', window.location.pathname);
+        console.log('onAuthStateChanged: includes("/cart/cart.html") result:', window.location.pathname.includes('/cart/cart.html'));
+        // --- END NEW DEBUGGING LOGS ---
+
+        // TEMPORARY: Remove conditional to force renderCart for testing
+        // if (window.location.pathname.includes('/cart/cart.html')) {
+            console.log('onAuthStateChanged: Current page is cart.html. Calling renderCart().');
             await renderCart();
-        }
+        // }
         await updateCartIcon(); // Always update cart icon on auth state change
     });
 
