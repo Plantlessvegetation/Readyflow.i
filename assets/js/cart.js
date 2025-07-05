@@ -1,6 +1,12 @@
 // This script handles all functionality for the cart.html page.
 
-document.addEventListener('DOMContentLoaded', () => {
+import { products } from './products.js';
+import { getCart, updateCartIcon } from './main.js';
+import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
+import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Import onAuthStateChanged
+
+document.addEventListener('DOMContentLoaded', async () => { // Keep async for other event listeners
     const cartItemsContainer = document.getElementById('cart-items-container');
     const cartSummary = document.getElementById('cart-summary');
     const cartSubtotalEl = document.getElementById('cart-subtotal');
@@ -10,8 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const promoCodeInput = document.getElementById('promo-code-input');
     const applyPromoBtn = document.getElementById('apply-promo-btn');
     const promoMessageEl = document.getElementById('promo-message');
-    
-    // --- Modal Elements ---
+
     const loginModal = document.getElementById('login-prompt-modal');
     const closeModalBtn = document.getElementById('modal-close-btn');
     const continueBtn = document.getElementById('modal-continue-btn');
@@ -22,9 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
         minSpend: 999
     };
 
-    function renderCart() {
-        const cart = getCart(); // From main.js
-        
+    async function renderCart() {
+        // --- ADDED CONSOLE.LOGS FOR DEBUGGING ---
+        console.log('--- Starting cart render process ---');
+        console.log('Am I logged in (auth.currentUser)?', auth.currentUser);
+        const cart = await getCart(); // Get the cart data
+        console.log('What cart data did I get?', cart);
+        console.log('Do I have product details (products)?', products);
+        // --- END OF CONSOLE.LOGS ---
+
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `
                 <div class="empty-cart-message">
@@ -39,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let cartHTML = '';
         let subtotal = 0;
 
-        cart.forEach(cartItem => {
+        for (const cartItem of cart) {
             const product = products.find(p => p.id === cartItem.id);
             if (product) {
                 subtotal += product.price;
@@ -56,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             }
-        });
+        }
 
         cartItemsContainer.innerHTML = cartHTML;
         cartSubtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
-        
+
         handleCouponDisplay(subtotal);
-        
+
         cartSummary.style.display = 'block';
         addRemoveListeners();
     }
@@ -75,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (appliedCoupon === COUPON.code && subtotal >= COUPON.minSpend) {
             discount = subtotal * COUPON.discount;
             total = subtotal - discount;
-            
+
             promoMessageEl.className = 'promo-message success';
             promoMessageEl.textContent = `Success! "${COUPON.code}" applied.`;
             discountRow.style.display = 'flex';
@@ -102,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cartTotalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
     }
-    
-    function applyCoupon() {
+
+    async function applyCoupon() {
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
-        const subtotal = getCart().reduce((acc, item) => {
+        const subtotal = (await getCart()).reduce((acc, item) => {
             const product = products.find(p => p.id === item.id);
             return acc + (product ? product.price : 0);
         }, 0);
@@ -121,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} to use this code.`;
             return;
         }
-        
+
         showLoginModal();
     }
 
@@ -139,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (continueBtn) {
         continueBtn.addEventListener('click', () => {
             localStorage.setItem('applied_coupon', COUPON.code);
-            // This path goes up one level from /cart/ and then into /pages/
             window.location.href = '../pages/login.html';
         });
     }
@@ -147,24 +157,51 @@ document.addEventListener('DOMContentLoaded', () => {
     function addRemoveListeners() {
         const removeButtons = document.querySelectorAll('.cart-item-remove');
         removeButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
+            button.addEventListener('click', async (e) => {
                 const productId = e.currentTarget.closest('.cart-item').dataset.id;
-                removeFromCart(productId);
+                await removeFromCart(productId);
             });
         });
     }
 
-    function removeFromCart(productId) {
-        let cart = getCart();
+    async function removeFromCart(productId) {
+        let cart = await getCart();
         const updatedCart = cart.filter(item => item.id !== productId);
-        localStorage.setItem('readyflow_cart', JSON.stringify(updatedCart));
-        
-        renderCart();
-        updateCartIcon();
+
+        if (auth.currentUser) {
+            const cartRef = doc(db, 'carts', auth.currentUser.uid);
+            try {
+                if (updatedCart.length > 0) {
+                    await setDoc(cartRef, { items: updatedCart });
+                } else {
+                    await deleteDoc(cartRef);
+                }
+                console.log('Item removed from Firestore cart.');
+            } catch (error) {
+                console.error('Error removing item from Firestore cart:', error);
+                return;
+            }
+        } else {
+            localStorage.setItem('readyflow_cart', JSON.stringify(updatedCart));
+            console.log('Item removed from localStorage cart.');
+        }
+
+        await renderCart();
+        await updateCartIcon();
     }
 
-    // Initial render of the cart on page load (only if on cart page)
-    if(cartItemsContainer) {
-        renderCart();
-    }
+    // IMPORTANT: Call renderCart and updateCartIcon only after Firebase auth state is known
+    // This listener ensures the cart is rendered with the correct data (Firestore or localStorage)
+    // as soon as the authentication state is known on the cart page.
+    onAuthStateChanged(auth, async (user) => {
+        if (window.location.pathname.includes('/cart/cart.html')) {
+            await renderCart();
+        }
+        await updateCartIcon(); // Always update cart icon on auth state change
+    });
+
+    // We are removing the direct call to renderCart from DOMContentLoaded.
+    // The onAuthStateChanged listener above is now the primary trigger for rendering the cart
+    // on the cart page, ensuring Firebase auth state is known before fetching cart data.
+    // REMOVED: if(cartItemsContainer) { await renderCart(); }
 });

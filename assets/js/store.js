@@ -1,5 +1,10 @@
 // This script handles all functionality for the template store and product detail pages.
 
+import { products } from './products.js';
+import { getCart, updateCartIcon } from './main.js';
+import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Store Page Logic ---
@@ -99,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (listViewBtn) listViewBtn.addEventListener('click', () => setView('list'));
         if (gridViewBtn) gridViewBtn.addEventListener('click', () => setView('grid'));
-        
+
         sortSelects.forEach(select => select.addEventListener('change', (e) => {
             // Sync both dropdowns
             sortSelects.forEach(s => s.value = e.target.value);
@@ -123,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (product) {
             document.title = `${product.name} - ReadyFlow`;
-            
+
             const initialMedia = product.media[0];
             let mainMediaHTML = '';
             if (initialMedia.type === 'youtube') {
@@ -178,23 +183,50 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeAddToCart() {
         const addToCartBtn = document.querySelector('.add-to-cart-btn');
         if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', (e) => {
+            addToCartBtn.addEventListener('click', async (e) => { // Made async
                 const productId = e.target.dataset.id;
-                addToCart(productId);
+                await addToCart(productId); // Await the async addToCart
             });
         }
     }
 
-    function addToCart(productId) {
-        let cart = getCart();
-        if (!cart.find(item => item.id === productId)) {
-            cart.push({ id: productId, quantity: 1 });
-            localStorage.setItem('readyflow_cart', JSON.stringify(cart));
-            updateCartIcon();
-            showToastNotification(`${products.find(p => p.id === productId).name} has been added to your cart!`);
-        } else {
-            showToastNotification('This item is already in your cart.');
+    async function addToCart(productId) { // Made async
+        let cart = await getCart(); // Await getCart()
+        const productToAdd = products.find(p => p.id === productId);
+
+        if (!productToAdd) {
+            console.error('Product not found:', productId);
+            showToastNotification('Error: Product not found.');
+            return;
         }
+
+        // Check if item is already in cart
+        if (cart.find(item => item.id === productId)) {
+            showToastNotification('This item is already in your cart.');
+            return;
+        }
+
+        cart.push({ id: productId, quantity: 1 });
+
+        if (auth.currentUser) { // Use auth.currentUser directly
+            // User is logged in, save to Firestore
+            const cartRef = doc(db, 'carts', auth.currentUser.uid);
+            try {
+                await setDoc(cartRef, { items: cart }); // Overwrite with updated cart
+                console.log('Cart updated in Firestore.');
+            } catch (error) {
+                console.error('Error updating cart in Firestore:', error);
+                showToastNotification('Error updating cart.');
+                return;
+            }
+        } else {
+            // User is not logged in, save to localStorage
+            localStorage.setItem('readyflow_cart', JSON.stringify(cart));
+            console.log('Cart updated in localStorage.');
+        }
+
+        await updateCartIcon(); // Await updateCartIcon()
+        showToastNotification(`${productToAdd.name} has been added to your cart!`);
     }
 
     function showToastNotification(message) {
@@ -222,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     thumb.classList.add('active');
                     const type = thumb.dataset.type;
                     const src = thumb.dataset.src;
-                    
+
                     let newMediaHTML = '';
                     if (type === 'youtube') {
                         const videoId = src.split('v=')[1]?.split('&')[0] || src.split('/').pop();

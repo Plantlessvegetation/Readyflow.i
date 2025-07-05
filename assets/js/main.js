@@ -1,30 +1,69 @@
 // This script handles sitewide functionality like theme switching and mobile navigation.
 
+// Import necessary modules from login.js and Firebase Firestore
+import { auth, db } from './login.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+// REMOVED: import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // This listener is now primarily in login.js
+
 // --- CART LOGIC ---
-function getCart() {
-    // Get the cart from localStorage, or return an empty list if it doesn't exist.
-    return JSON.parse(localStorage.getItem('readyflow_cart')) || [];
+// Make getCart async as it will interact with Firestore
+export async function getCart() {
+    if (auth.currentUser) {
+        // User is logged in, try to get cart from Firestore
+        const cartRef = doc(db, 'carts', auth.currentUser.uid);
+        try {
+            const docSnap = await getDoc(cartRef);
+            if (docSnap.exists()) {
+                return docSnap.data().items || [];
+            }
+        } catch (error) {
+            console.error('Error fetching cart from Firestore:', error);
+        }
+        return []; // Return empty if error or no doc
+    } else {
+        // User is not logged in, get cart from localStorage
+        return JSON.parse(localStorage.getItem('readyflow_cart')) || [];
+    }
 }
 
-function updateCartIcon() {
-    const cart = getCart();
+export async function updateCartIcon() {
+    const cart = await getCart();
     const cartCountElement = document.getElementById('cart-item-count');
+
     if (cartCountElement) {
-        cartCountElement.textContent = cart.length;
+        // --- ADDED DEBUGGING LOGS ---
+        console.log('DEBUG: updateCartIcon triggered.');
+        console.log('DEBUG: Current cartCountElement HTML before update:', cartCountElement.outerHTML);
+        // --- END DEBUGGING LOGS ---
+
+        const currentCount = cart.length;
+        console.log('DEBUG: updateCartIcon - Cart Length (actual from getCart):', currentCount);
+
+        cartCountElement.textContent = String(currentCount); // Explicitly convert to string
+
+        // Hide the cart count bubble if cart is empty, show otherwise
+        if (currentCount === 0) {
+            cartCountElement.style.display = 'none';
+        } else {
+            cartCountElement.style.display = 'flex'; // Or 'inline-flex' based on your CSS
+        }
+
+        // --- ADDED DEBUGGING LOGS ---
+        console.log('DEBUG: Current cartCountElement HTML after update:', cartCountElement.outerHTML);
+        // --- END DEBUGGING LOGS ---
     }
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Update the cart icon as soon as the page loads
-    updateCartIcon();
+    // REMOVED: updateCartIcon(); // This initial call is now handled by login.js onAuthStateChanged
 
     // --- THEME SWITCHER LOGIC ---
     const themeSwitcher = document.getElementById('theme-switcher');
     if (themeSwitcher) {
         const sunIcon = themeSwitcher.querySelector('.fa-sun');
         const moonIcon = themeSwitcher.querySelector('.fa-moon');
-        
+
         const applyTheme = (theme) => {
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
@@ -78,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             question.addEventListener('click', () => {
                 const answer = item.querySelector('.faq-answer');
                 const wasActive = item.classList.contains('active');
-                
+
                 faqItems.forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.classList.remove('active');
@@ -109,4 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.classList.add('active');
         }
     });
+
+    // REMOVED: onAuthStateChanged listener (moved to login.js for centralization)
+    // onAuthStateChanged(auth, (user) => { ... });
 });

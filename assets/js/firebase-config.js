@@ -1,6 +1,6 @@
 // This file holds the secret keys to connect to our Firebase project.
 
-const firebaseConfig = {
+export const firebaseConfig = { // ADD 'export' here
   apiKey: "AIzaSyC67um5fJeNLrlhFSOOXoe-mk3M7lr6kK8",
   authDomain: "readyflow-website.firebaseapp.com",
   projectId: "readyflow-website",

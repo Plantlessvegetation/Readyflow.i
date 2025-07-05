@@ -1,7 +1,7 @@
 // This file acts as our central database for all website products.
 // To add a new product, simply copy one of the objects and change the details.
 
-const products = [
+export const products = [ // Added export
   {
     id: 'cafe-business',
     name: 'Cafe & Small Business',
