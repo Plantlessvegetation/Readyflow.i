@@ -4,15 +4,46 @@ import { products } from './products.js';
 import { getCart, updateCartIcon } from './main.js';
 import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
+import { upsellPlans, getUpsellPlanPrice } from './upsells.js'; // NEW: Import upsell data and helper
 
 document.addEventListener('DOMContentLoaded', () => {
+    // NEW: Declaring these variables AND functions in a higher scope (DOMContentLoaded)
+    let selectedUpsellId = 'none'; // Default to no upsell selected
+    let baseProductOriginalPrice = 0; // Store the original product price
+    let currentPriceDisplayEl; // Will be set during render
+
+    // Function to calculate and update total price based on correct upsell logic
+    // MOVED: This function is now in the higher DOMContentLoaded scope
+    function updateTotalPrice() {
+        console.log('updateTotalPrice called.'); // Debug log
+        console.log('selectedUpsellId:', selectedUpsellId); // Debug log
+        console.log('baseProductOriginalPrice:', baseProductOriginalPrice); // Debug log
+
+        let total = baseProductOriginalPrice; // Start with original price
+        
+        if (selectedUpsellId !== 'none') {
+            const upsellFixedPrice = getUpsellPlanPrice(selectedUpsellId);
+            total = (baseProductOriginalPrice / 2) + upsellFixedPrice; // Halve template price + upsell fixed price
+        }
+
+        console.log('Calculated total:', total); // Debug log
+
+        if (currentPriceDisplayEl) {
+            console.log('currentPriceDisplayEl found. Old text:', currentPriceDisplayEl.textContent); // Debug log
+            currentPriceDisplayEl.textContent = `₹${total.toLocaleString('en-IN')}`;
+            console.log('currentPriceDisplayEl new text:', currentPriceDisplayEl.textContent); // Debug log
+        } else {
+            console.warn('currentPriceDisplayEl not found!'); // Debug warning
+        }
+    }
+
 
     // --- Store Page Logic ---
     const storePageContainer = document.getElementById('product-container');
     if (storePageContainer) {
         const productContainer = storePageContainer;
         const openBtn = document.querySelector('.open-sidebar-btn');
-        const closeBtn = document.querySelector('.sidebar-close-btn');
+        const closeBtn = document.querySelector('.sidebar-sidebar-close-btn');
         const pageOverlay = document.querySelector('.page-overlay');
         const listViewBtn = document.getElementById('list-view-btn');
         const gridViewBtn = document.getElementById('grid-view-btn');
@@ -128,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (product) {
             document.title = `${product.name} - ReadyFlow`;
+            baseProductOriginalPrice = product.price; // Set initial original product price
 
             const initialMedia = product.media[0];
             let mainMediaHTML = '';
@@ -139,6 +171,20 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 mainMediaHTML = `<img src="${initialMedia.src}" alt="${product.name}" class="showcased-image">`;
             }
+
+            // NEW: Generate upsell options HTML dynamically
+            const upsellOptionsHTML = upsellPlans.map(plan => `
+                <label class="upsell-option ${plan.id === 'none' ? 'selected' : ''}">
+                    <input type="radio" name="upsell-plan" value="${plan.id}" ${plan.id === 'none' ? 'checked' : ''}>
+                    <div class="upsell-info-content">
+                        <h4>${plan.name}</h4>
+                        <p>${plan.description}</p>
+                        ${plan.id !== 'none' ? `<span class="upsell-price-label">+ ₹${plan.price.toLocaleString('en-IN')}</span>` : ''}
+                    </div>
+                    ${plan.detailedOfferings.length > 0 ? `<button type="button" class="upsell-info-button" data-upsell-id="${plan.id}"><i class="fas fa-info-circle"></i></button>` : ''}
+                </label>
+            `).join('');
+
 
             const detailHTML = `
                 <div class="product-media">
@@ -157,6 +203,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="product-page-description">${product.description}</p>
                     <h3>Best For:</h3>
                     <ul class="use-case-list">${product.useCases.map(useCase => `<li>${useCase}</li>`).join('')}</ul>
+
+                    <div class="upsell-section">
+                        <button class="upsell-accordion-header">
+                            Add Powerful Features & Save 50% on Template Price!
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="upsell-content">
+                            <div class="upsell-options-container">
+                                ${upsellOptionsHTML}
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="product-page-purchase">
                         <div class="product-page-price">₹${product.price}</div>
                         <div class="button-group">
@@ -172,12 +231,80 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             productDetailContainer.innerHTML = detailHTML;
+
+            currentPriceDisplayEl = productDetailContainer.querySelector('.product-page-price'); // Set element reference
+            updateTotalPrice(); // Initial price display
+
             initializeProductGallery();
             initializeAddToCart();
+            initializeUpsellLogic(); // NEW: Initialize upsell specific JS
+
         } else {
             productDetailContainer.innerHTML = '<p>Product not found. Please return to the <a href="website-store.html">store</a>.</p>';
         }
     }
+
+    // --- NEW: UPSALE LOGIC INITIALIZATION ---
+    function initializeUpsellLogic() {
+        const upsellAccordionHeader = document.querySelector('.upsell-accordion-header');
+        const upsellContent = document.querySelector('.upsell-content');
+        const upsellRadioButtons = document.querySelectorAll('input[name="upsell-plan"]');
+        const upsellInfoButtons = document.querySelectorAll('.upsell-info-button');
+        const upsellInfoModal = document.getElementById('upsell-info-modal');
+        const upsellInfoCloseBtn = document.getElementById('upsell-info-close-btn');
+        const upsellInfoModalTitle = document.getElementById('upsell-info-modal-title');
+        const upsellInfoModalDesc = document.getElementById('upsell-info-modal-description');
+        const upsellInfoModalOfferings = document.getElementById('upsell-info-modal-offerings');
+
+
+        // Accordion toggle
+        if (upsellAccordionHeader) {
+            upsellAccordionHeader.addEventListener('click', () => {
+                upsellContent.classList.toggle('active');
+                upsellAccordionHeader.classList.toggle('active');
+                // Animate content height
+                if (upsellContent.classList.contains('active')) {
+                    upsellContent.style.maxHeight = upsellContent.scrollHeight + 'px';
+                } else {
+                    upsellContent.style.maxHeight = null;
+                }
+            });
+        }
+
+        // Radio button change listener
+        upsellRadioButtons.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                selectedUpsellId = event.target.value;
+                // Update selection visual for labels
+                upsellRadioButtons.forEach(rb => rb.closest('.upsell-option').classList.remove('selected'));
+                event.target.closest('.upsell-option').classList.add('selected');
+                updateTotalPrice(); // NEW: Call updateTotalPrice on upsell selection
+            });
+        });
+
+        // Info button click listener
+        upsellInfoButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const upsellId = event.currentTarget.dataset.upsellId;
+                const plan = upsellPlans.find(p => p.id === upsellId);
+
+                if (plan) {
+                    upsellInfoModalTitle.textContent = plan.name;
+                    upsellInfoModalDesc.textContent = plan.description;
+                    upsellInfoModalOfferings.innerHTML = plan.detailedOfferings.map(item => `<li>${item}</li>`).join('');
+                    upsellInfoModal.classList.add('show');
+                }
+            });
+        });
+
+        // Close info modal
+        if (upsellInfoCloseBtn) {
+            upsellInfoCloseBtn.addEventListener('click', () => {
+                upsellInfoModal.classList.remove('show');
+            });
+        }
+    }
+
 
     // --- CART & GALLERY FUNCTIONS ---
     function initializeAddToCart() {
@@ -185,12 +312,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (addToCartBtn) {
             addToCartBtn.addEventListener('click', async (e) => { // Made async
                 const productId = e.target.dataset.id;
-                await addToCart(productId); // Await the async addToCart
+                // NEW: Pass selectedUpsellId to addToCart
+                await addToCart(productId, selectedUpsellId); // Await the async addToCart
             });
         }
     }
 
-    async function addToCart(productId) { // Made async
+    async function addToCart(productId, selectedUpsellId = 'none') { // Modified to accept upsellId
         let cart = await getCart(); // Await getCart()
         const productToAdd = products.find(p => p.id === productId);
 
@@ -200,13 +328,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Check if item is already in cart
-        if (cart.find(item => item.id === productId)) {
-            showToastNotification('This item is already in your cart.');
+        // Check if item (product + specific upsell) is already in cart
+        // A product with "no upsell" is different from a product with "get-online" upsell
+        if (cart.find(item => item.id === productId && item.upsellId === selectedUpsellId)) {
+            showToastNotification('This specific item configuration is already in your cart.');
             return;
         }
 
-        cart.push({ id: productId, quantity: 1 });
+        // Push product with selected upsell ID
+        cart.push({ id: productId, quantity: 1, upsellId: selectedUpsellId });
 
         if (auth.currentUser) { // Use auth.currentUser directly
             // User is logged in, save to Firestore
@@ -226,7 +356,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         await updateCartIcon(); // Await updateCartIcon()
-        showToastNotification(`${productToAdd.name} has been added to your cart!`);
+        
+        // Find the upsell name for the toast notification
+        const upsellNameForToast = (selectedUpsellId && selectedUpsellId !== 'none') 
+                                   ? ` with ${upsellPlans.find(p => p.id === selectedUpsellId)?.name}` 
+                                   : '';
+        showToastNotification(`${productToAdd.name}${upsellNameForToast} has been added to your cart!`);
     }
 
     function showToastNotification(message) {

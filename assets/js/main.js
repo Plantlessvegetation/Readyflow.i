@@ -3,7 +3,6 @@
 // Import necessary modules from login.js and Firebase Firestore
 import { auth, db } from './login.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-// REMOVED: import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // This listener is now primarily in login.js
 
 // --- CART LOGIC ---
 // Make getCart async as it will interact with Firestore
@@ -54,9 +53,23 @@ export async function updateCartIcon() {
     }
 }
 
+// --- LOGIN BUTTON VISIBILITY LOGIC ---
+export function updateLoginButtonVisibility() {
+    const loginButton = document.getElementById('login-signup-btn');
+    if (loginButton) {
+        // Check Firebase authentication state. `auth.currentUser` is null if no user is logged in.
+        if (auth.currentUser) {
+            loginButton.style.display = 'none'; // Hide if logged in
+        } else {
+            loginButton.style.display = 'inline-flex'; // Show if logged out
+        }
+    }
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
-    // REMOVED: updateCartIcon(); // This initial call is now handled by login.js onAuthStateChanged
+    // updateCartIcon(); // This initial call is now handled by login.js onAuthStateChanged
+    // updateLoginButtonVisibility(); // This initial call is now handled by login.js onAuthStateChanged
 
     // --- THEME SWITCHER LOGIC ---
     const themeSwitcher = document.getElementById('theme-switcher');
@@ -149,6 +162,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // REMOVED: onAuthStateChanged listener (moved to login.js for centralization)
-    // onAuthStateChanged(auth, (user) => { ... });
 });

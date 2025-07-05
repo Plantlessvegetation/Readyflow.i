@@ -60,11 +60,14 @@
             </nav>
             <div class="header-right">
                 <button class="theme-switcher" id="theme-switcher" title="Toggle Theme"><i class="fas fa-sun"></i><i class="fas fa-moon" style="display: none;"></i></button>
+                <a href="../pages/login.html" class="btn btn-secondary login-signup-btn" id="login-signup-btn">Login / Sign Up</a>
                 <a href="cart.html" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-item-count">0</span>
                 </a>
-                <button class="mobile-nav-toggle" aria-label="Toggle Navigation"><i class="fas fa-bars"></i></button>
+                <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -107,6 +110,16 @@
             <p>To apply this offer and secure your discount, please sign in or create an account.</p>
             <div class="modal-buttons">
                 <button class="btn btn-primary" id="modal-continue-btn">Continue to Login</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="login-success-modal">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="login-success-close-btn">&times;</button>
+            <h3><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i>Login Successful!</h3>
+            <p>You have successfully logged in. Welcome back!</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" id="login-success-home-btn">Return to Home</button>
             </div>
         </div>
     </div>

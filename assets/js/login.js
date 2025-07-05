@@ -19,13 +19,13 @@ import {
 // IMPORT firebaseConfig from its own module
 import { firebaseConfig } from './firebase-config.js';
 
-// IMPORT updateCartIcon from main.js (for sitewide icon updates)
-import { updateCartIcon } from './main.js';
+// IMPORT updateCartIcon and updateLoginButtonVisibility from main.js (for sitewide icon and button updates)
+import { updateCartIcon, updateLoginButtonVisibility } from './main.js';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const auth = getAuth(app); // REMOVED 'export' keyword here
+const db = getFirestore(app); // REMOVED 'export' keyword here
 
 let currentUser = null; // This variable's state is primarily for login.js's internal use. auth.currentUser is more reliable.
 
@@ -36,6 +36,11 @@ const container = document.querySelector('.container-box');
 
 const signUpForm = document.getElementById('signUpForm');
 const signInForm = document.getElementById('signInForm');
+
+const loginSuccessModal = document.getElementById('login-success-modal'); // New modal element
+const loginSuccessCloseBtn = document.getElementById('login-success-close-btn');
+const loginSuccessHomeBtn = document.getElementById('login-success-home-btn');
+
 
 // --- Animation Logic ---
 if (signUpButton) {
@@ -83,6 +88,32 @@ async function migrateLocalCartToFirestore(uid) {
     }
 }
 
+// --- Login Success Modal Functions ---
+function showLoginSuccessModal() {
+    if (loginSuccessModal) {
+        loginSuccessModal.classList.add('show');
+    }
+}
+
+function hideLoginSuccessModal() {
+    if (loginSuccessModal) {
+        loginSuccessModal.classList.remove('show');
+    }
+}
+
+// Event listeners for the new modal
+if (loginSuccessCloseBtn) {
+    loginSuccessCloseBtn.addEventListener('click', hideLoginSuccessModal);
+}
+
+if (loginSuccessHomeBtn) {
+    loginSuccessHomeBtn.addEventListener('click', () => {
+        hideLoginSuccessModal();
+        window.location.href = '../index.html'; // Redirect to home page
+    });
+}
+
+
 // Listen for authentication state changes (This listener is now the primary trigger for updateCartIcon sitewide)
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -93,9 +124,10 @@ onAuthStateChanged(auth, async (user) => {
         currentUser = null; // Clear the local currentUser variable
         console.log('User signed out.');
     }
-    // IMPORTANT: Call updateCartIcon AFTER the auth state is known (and migration is potentially done)
-    // This ensures the icon reflects the correct cart count for logged-in or guest users across all pages.
+    // IMPORTANT: Call updateCartIcon and updateLoginButtonVisibility AFTER the auth state is known (and migration is potentially done)
+    // This ensures the icon and button reflect the correct state for logged-in or guest users across all pages.
     await updateCartIcon();
+    updateLoginButtonVisibility();
 });
 
 // --- Firebase Authentication Logic ---
@@ -111,8 +143,7 @@ if (signUpForm) {
             .then(userCredential => {
                 const user = userCredential.user;
                 console.log('Sign up successful!', user);
-                alert('Account created successfully! You are now logged in.');
-                window.location.href = '../index.html';
+                showLoginSuccessModal(); // Show success modal
             })
             .catch(error => {
                 const errorCode = error.code;
@@ -134,8 +165,7 @@ if (signInForm) {
             .then(userCredential => {
                 const user = userCredential.user;
                 console.log('Sign in successful!', user);
-                alert('Welcome back! You are now logged in.');
-                window.location.href = '../index.html';
+                showLoginSuccessModal(); // Show success modal
             })
             .catch(error => {
                 const errorCode = error.code;
@@ -150,4 +180,7 @@ if (signInForm) {
     });
 }
 
+// Export auth and db for use in other modules like main.js and cart.js
+// currentUser is less reliable for real-time auth state; prefer onAuthStateChanged or auth.currentUser
+// But keeping for backward compatibility if other files directly use currentUser.
 export { auth, db, currentUser };
