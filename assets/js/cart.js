@@ -143,7 +143,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- TEMPORARY DEBUGGING CALL ---
-    // Make sure this is wrapped in a conditional to only run on cart.html
+    console.log('Current pathname:', window.location.pathname); // ADD THIS LINE
+    console.log('Includes "/cart/cart.html":', window.location.pathname.includes('/cart/cart.html')); // ADD THIS LINE
+
     if (window.location.pathname.includes('/cart/cart.html')) {
         await renderCart(); // Call renderCart directly for testing
     }
