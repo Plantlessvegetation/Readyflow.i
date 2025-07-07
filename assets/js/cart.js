@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Current pathname:', window.location.pathname); // ADD THIS LINE
     console.log('Includes "/cart/cart.html":', window.location.pathname.includes('/cart/cart.html')); // ADD THIS LINE
 
-    if (window.location.pathname.includes('/cart/cart.html')) {
+    if (window.location.pathname.includes('/cart/cart') || window.location.pathname === '/cart/') { // Updated condition
         await renderCart(); // Call renderCart directly for testing
     }
     // Note: updateCartIcon is globally handled by main.js's onAuthStateChanged listener.
