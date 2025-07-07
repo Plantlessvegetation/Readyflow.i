@@ -24,6 +24,7 @@
             <div class="header-right">
                 <button class="theme-switcher" id="theme-switcher" title="Toggle Theme"><i class="fas fa-sun"></i><i class="fas fa-moon" style="display: none;"></i></button>
                 <a href="../cart/cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i><span id="cart-item-count">0</span></a>
+                <button class="account-toggle" id="account-toggle" title="Account"><i class="fas fa-user-circle"></i></button>
                 <button class="mobile-nav-toggle" aria-label="Toggle Navigation"><i class="fas fa-bars"></i></button>
             </div>
         </div>
@@ -67,10 +68,30 @@
             <small>© 2025 ReadyFlow. All Rights Reserved.</small>
         </div>
     </footer>
+
+    <div class="account-sidebar-overlay" id="account-sidebar-overlay">
+        <div class="account-sidebar" id="account-sidebar">
+            <button class="sidebar-close-btn" id="account-sidebar-close-btn">&times;</button>
+            <div class="sidebar-content">
+                <div id="account-sidebar-logged-out" class="account-options">
+                    <h3>Welcome!</h3>
+                    <p>Sign in or create an account to access your personalized features.</p>
+                    <a href="../pages/login.html" class="btn btn-primary full-width-btn">Sign In / Sign Up</a>
+                </div>
+                <div id="account-sidebar-logged-in" class="account-options hidden">
+                    <h3>Hello, <span id="user-display-name">User</span>!</h3>
+                    <ul class="account-nav">
+                        <li><a href="../cart/cart.html"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+                        <li><button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="module" src="../assets/js/firebase-config.js"></script>
     <script type="module" src="../assets/js/login.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script type="module" src="../assets/js/products.js"></script>
     <script type="module" src="../assets/js/store.js"></script>
-    </body>
+</body>
 </html>

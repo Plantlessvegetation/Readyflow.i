@@ -1,9 +1,9 @@
 // This script handles sitewide functionality like theme switching and mobile navigation.
 
 // Import necessary modules from login.js and Firebase Firestore
-import { auth, db } from './login.js';
+import { auth, db } from './login.js'; // Ensure auth and db are imported
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-// REMOVED: import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // This listener is now primarily in login.js
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Import onAuthStateChanged and signOut
 
 // --- CART LOGIC ---
 // Make getCart async as it will interact with Firestore
@@ -31,33 +31,26 @@ export async function updateCartIcon() {
     const cartCountElement = document.getElementById('cart-item-count');
 
     if (cartCountElement) {
-        // --- ADDED DEBUGGING LOGS ---
         console.log('DEBUG: updateCartIcon triggered.');
         console.log('DEBUG: Current cartCountElement HTML before update:', cartCountElement.outerHTML);
-        // --- END DEBUGGING LOGS ---
 
         const currentCount = cart.length;
         console.log('DEBUG: updateCartIcon - Cart Length (actual from getCart):', currentCount);
 
-        cartCountElement.textContent = String(currentCount); // Explicitly convert to string
+        cartCountElement.textContent = String(currentCount);
 
-        // Hide the cart count bubble if cart is empty, show otherwise
         if (currentCount === 0) {
             cartCountElement.style.display = 'none';
         } else {
-            cartCountElement.style.display = 'flex'; // Or 'inline-flex' based on your CSS
+            cartCountElement.style.display = 'flex';
         }
 
-        // --- ADDED DEBUGGING LOGS ---
         console.log('DEBUG: Current cartCountElement HTML after update:', cartCountElement.outerHTML);
-        // --- END DEBUGGING LOGS ---
     }
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // REMOVED: updateCartIcon(); // This initial call is now handled by login.js onAuthStateChanged
-
     // --- THEME SWITCHER LOGIC ---
     const themeSwitcher = document.getElementById('theme-switcher');
     if (themeSwitcher) {
@@ -149,6 +142,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // REMOVED: onAuthStateChanged listener (moved to login.js for centralization)
-    // onAuthStateChanged(auth, (user) => { ... });
+    // --- NEW ACCOUNT SIDEBAR LOGIC ---
+    const accountToggleBtn = document.getElementById('account-toggle');
+    const accountSidebarOverlay = document.getElementById('account-sidebar-overlay');
+    const accountSidebar = document.getElementById('account-sidebar');
+    const accountSidebarCloseBtn = document.getElementById('account-sidebar-close-btn');
+    const accountLoggedOutSection = document.getElementById('account-sidebar-logged-out');
+    const accountLoggedInSection = document.getElementById('account-sidebar-logged-in');
+    const userDisplayName = document.getElementById('user-display-name');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (accountToggleBtn && accountSidebarOverlay && accountSidebar && accountSidebarCloseBtn) {
+        const closeAccountSidebar = () => {
+            document.body.classList.remove('account-sidebar-open');
+        };
+
+        accountToggleBtn.addEventListener('click', () => {
+            // Close mobile nav if open
+            mainHeader.classList.remove('nav-open');
+            document.body.classList.toggle('account-sidebar-open');
+        });
+
+        accountSidebarCloseBtn.addEventListener('click', closeAccountSidebar);
+        accountSidebarOverlay.addEventListener('click', (e) => {
+            if (e.target === accountSidebarOverlay) {
+                closeAccountSidebar();
+            }
+        });
+
+        // Logout functionality
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    console.log('User signed out successfully.');
+                    // The onAuthStateChanged listener will handle UI update
+                    closeAccountSidebar(); // Close sidebar after logout
+                } catch (error) {
+                    console.error('Error signing out:', error);
+                    alert('Error signing out: ' + error.message);
+                }
+            });
+        }
+    }
+
+    // --- CENTRALIZED onAuthStateChanged LISTENER FOR HEADER UI ---
+    onAuthStateChanged(auth, async (user) => {
+        console.log('onAuthStateChanged triggered in main.js:', user ? user.uid : 'logged out'); // Debugging
+
+        if (user) {
+            // User is logged in
+            accountLoggedOutSection?.classList.add('hidden');
+            accountLoggedInSection?.classList.remove('hidden');
+            userDisplayName.textContent = user.displayName || user.email || 'User'; // Prioritize display name, then email
+        } else {
+            // User is logged out
+            accountLoggedOutSection?.classList.remove('hidden');
+            accountLoggedInSection?.classList.add('hidden');
+        }
+        
+        // This ensures the cart icon updates globally based on auth state
+        await updateCartIcon(); 
+    });
+
 });
