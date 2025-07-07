@@ -4,7 +4,7 @@ import { products } from './products.js';
 import { getCart, updateCartIcon } from './main.js';
 import { auth, db, currentUser } from './login.js';
 import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-// REMOVE: import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // This import is no longer needed for this test
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // RE-ADD THIS IMPORT
 
 import { getUpsellPlanDetails, getUpsellPlanPrice } from './upsell.js';
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     async function renderCart() {
-        console.log('--- Starting renderCart function (Direct Call Test) ---'); // Modified debug
+        console.log('--- Starting renderCart function (Final Attempt) ---'); // Modified debug
         console.log('Current cartItemsContainer element:', cartItemsContainer);
 
         const cart = await getCart();
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         cartSummary.style.display = 'block';
         addRemoveListeners();
-        console.log('--- renderCart function finished (Direct Call Test) ---'); // Modified debug
+        console.log('--- renderCart function finished (Final Attempt) ---'); // Modified debug
     }
 
     function handleCouponDisplay(subtotal) {
@@ -142,14 +142,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         // ... (existing code) ...
     }
 
-    // --- TEMPORARY DEBUGGING CALL ---
-    console.log('Current pathname:', window.location.pathname); // ADD THIS LINE
-    console.log('Includes "/cart/cart.html":', window.location.pathname.includes('/cart/cart.html')); // ADD THIS LINE
-
-    if (window.location.pathname.includes('/cart/cart') || window.location.pathname === '/cart/') { // Updated condition
-        await renderCart(); // Call renderCart directly for testing
-    }
-    // Note: updateCartIcon is globally handled by main.js's onAuthStateChanged listener.
-    // If you need it immediately on cart page load regardless of auth state, you could call it here too.
-    // For now, focus on renderCart.
+    // --- REVERTED TO ORIGINAL ON_AUTH_STATE_CHANGED TRIGGER WITH CORRECTED PATH CHECK ---
+    onAuthStateChanged(auth, async (user) => {
+        // Corrected the pathname check to account for Netlify's clean URLs
+        if (window.location.pathname.includes('/cart/cart') || window.location.pathname === '/cart/') {
+            console.log('Condition met: Calling renderCart() via onAuthStateChanged.'); // Added debug
+            await renderCart();
+        }
+        await updateCartIcon();
+    });
 });
