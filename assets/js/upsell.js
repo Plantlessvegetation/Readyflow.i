@@ -5,14 +5,14 @@ export const upsellPlans = [
     {
         id: 'none', // Option for no upsell
         name: 'No Upsell (Original Price)',
-        price: 0, // No additional cost for this option
-        description: 'Continue with your selected template at its original price.',
-        detailedOfferings: []
+        price: 0, // No additional cost for this option, template price will be added separately
+        description: 'Get the complete, fully editable website code delivered instantly, ready for your custom modifications.', // Corrected description
+        detailedOfferings: ['Base Template Code', 'Standard Template Features'] // Added for consistency with info modal
     },
     {
         id: 'get-online',
         name: 'Get Online Bundle',
-        price: 699, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
+        price: 699, // Fixed price for this bundle
         description: 'Get your chosen website template customized and live on the internet, hassle-free.',
         detailedOfferings: [
             'Core Content Personalization (Name, Contact Info, Address, About Us, 3-5 Headlines)',
@@ -23,10 +23,10 @@ export const upsellPlans = [
     {
         id: 'enhanced-presence',
         name: 'Enhanced Presence Pack',
-        price: 999, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
+        price: 999, // Fixed price for this bundle
         description: 'Increase your website\'s visibility and connect with your audience directly, building a stronger online presence.',
         detailedOfferings: [
-            'All "Get Online" Bundle services are included.', // This is descriptive, not a literal price addition
+            'All "Get Online" Bundle services are included.',
             'Advanced Content Personalization (Testimonials, detailed Product/Service descriptions, FAQs)',
             'Basic On-Page SEO Elements (<title> & <meta name="description"> for 3-5 pages, H1/H2 verification)',
             'Social Media Open Graph (OG) Tags (title, description, image, url, type)',
@@ -36,10 +36,10 @@ export const upsellPlans = [
     {
         id: 'pro-conversion',
         name: 'Pro Conversion Package',
-        price: 2499, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
+        price: 2499, // Fixed price for this bundle
         description: 'Transform your website into a lead-generating asset with essential business integrations.',
         detailedOfferings: [
-            'All "Enhanced Presence" Pack services are included.', // This is descriptive, not a literal price addition
+            'All "Enhanced Presence" Pack services are included.',
             'Google Analytics Tracking Integration (user\'s GA ID)',
             'Basic Contact Form Integration (Formspree/Netlify Forms endpoint)',
             'Basic Email List Integration (user\'s embed code)'

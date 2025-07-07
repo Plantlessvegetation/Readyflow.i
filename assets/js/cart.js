@@ -5,6 +5,7 @@ import { getCart, updateCartIcon } from './main.js';
 import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
 import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Import onAuthStateChanged
+import { getUpsellPlanDetails, getUpsellPlanPrice } from './upsell.js'; // Import upsell logic
 
 document.addEventListener('DOMContentLoaded', async () => { // Keep async for other event listeners
     const cartItemsContainer = document.getElementById('cart-items-container');
@@ -53,15 +54,32 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         for (const cartItem of cart) {
             const product = products.find(p => p.id === cartItem.id);
             if (product) {
-                subtotal += product.price;
+                let itemPrice = 0;
+                let itemDescription = product.name;
+
+                if (cartItem.upsellId && cartItem.upsellId !== 'none') {
+                    const upsellDetails = getUpsellPlanDetails(cartItem.upsellId);
+                    if (upsellDetails) {
+                        itemPrice = upsellDetails.price; // Only upsell price when bundle is chosen
+                        itemDescription = `${product.name} (with ${upsellDetails.name})`;
+                    } else {
+                        // Fallback if upsellDetails not found, use original product price
+                        itemPrice = product.price;
+                    }
+                } else {
+                    itemPrice = product.price; // Original product price if no upsell or 'none'
+                }
+                
+                subtotal += itemPrice;
+
                 cartHTML += `
-                    <div class="cart-item" data-id="${product.id}">
+                    <div class="cart-item" data-id="${product.id}" data-upsell-id="${cartItem.upsellId || 'none'}">
                         <a href="../pages/product-detail.html?id=${product.id}" class="cart-item-img-link">
                             <img src="${product.image}" alt="${product.name}" class="cart-item-img" onerror="this.src='https://placehold.co/100x75/1A202C/FFFFFF?text=...'">
                         </a>
                         <div class="cart-item-details">
-                            <h3><a href="../pages/product-detail.html?id=${product.id}">${product.name}</a></h3>
-                            <p>₹${product.price}</p>
+                            <h3><a href="../pages/product-detail.html?id=${product.id}">${itemDescription}</a></h3>
+                            <p>₹${itemPrice.toLocaleString('en-IN')}</p>
                         </div>
                         <button class="cart-item-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
                     </div>
@@ -116,10 +134,20 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
 
     async function applyCoupon() {
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
+        // Recalculate subtotal using the new logic for coupon application
         const subtotal = (await getCart()).reduce((acc, item) => {
             const product = products.find(p => p.id === item.id);
-            return acc + (product ? product.price : 0);
+            if (product) {
+                if (item.upsellId && item.upsellId !== 'none') {
+                    const upsellDetails = getUpsellPlanDetails(item.upsellId);
+                    return acc + (upsellDetails ? upsellDetails.price : 0);
+                } else {
+                    return acc + product.price;
+                }
+            }
+            return acc;
         }, 0);
+
 
         if (enteredCode !== COUPON.code) {
             promoMessageEl.className = 'promo-message error';
@@ -158,15 +186,18 @@ document.addEventListener('DOMContentLoaded', async () => { // Keep async for ot
         const removeButtons = document.querySelectorAll('.cart-item-remove');
         removeButtons.forEach(button => {
             button.addEventListener('click', async (e) => {
-                const productId = e.currentTarget.closest('.cart-item').dataset.id;
-                await removeFromCart(productId);
+                const cartItemElement = e.currentTarget.closest('.cart-item');
+                const productId = cartItemElement.dataset.id;
+                const upsellId = cartItemElement.dataset.upsellId || 'none'; // Get upsellId for specific removal
+                await removeFromCart(productId, upsellId); // Pass upsellId to removeFromCart
             });
         });
     }
 
-    async function removeFromCart(productId) {
+    async function removeFromCart(productId, upsellIdToRemove) {
         let cart = await getCart();
-        const updatedCart = cart.filter(item => item.id !== productId);
+        // Filter based on both productId and upsellId to remove specific item-upsell combo
+        const updatedCart = cart.filter(item => !(item.id === productId && (item.upsellId || 'none') === upsellIdToRemove));
 
         if (auth.currentUser) {
             const cartRef = doc(db, 'carts', auth.currentUser.uid);

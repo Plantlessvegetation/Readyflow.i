@@ -109,9 +109,10 @@
 
 .use-case-list li {
     color: var(--text-muted);
-    margin-bottom: 10px;
-    padding-left: 20px;
+    margin-bottom: 15px;
+    padding-left: 25px;
     position: relative;
+    font-size: 1rem;
 }
 
 .use-case-list li::before {
@@ -121,7 +122,8 @@
     color: var(--accent-color);
     position: absolute;
     left: 0;
-    top: 2px;
+    top: 0px;
+    font-size: 1.2rem;
 }
 
 .product-page-purchase {
@@ -129,6 +131,7 @@
     border-radius: 12px;
     padding: 25px;
     border: 1px solid var(--border-subtle);
+    margin-bottom: 25px;
 }
 
 .product-page-price {
@@ -139,10 +142,219 @@
     margin-bottom: 20px;
 }
 
+/* --- Upsell Accordion Styles --- */
+.upsell-accordion {
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    /* Increased margin-bottom to create more space from the lower block */
+    margin-bottom: 35px; 
+    overflow: hidden;
+    background-color: var(--bg-primary); /* Base color for the accordion box */
+}
+
+.accordion-header {
+    background-color: var(--bg-secondary); /* Lighter background for header */
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.accordion-header:hover {
+    background-color: #2a3343; /* Slightly darker on hover than bg-secondary */
+    border-color: var(--accent-color); /* Highlight border on hover */
+}
+
+.accordion-header h4 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.accordion-icon {
+    transition: transform 0.3s ease, color 0.3s ease;
+    color: var(--text-muted);
+}
+
+.accordion-header:hover .accordion-icon {
+    color: var(--accent-color);
+}
+
+.accordion-header.active .accordion-icon {
+    transform: rotate(180deg);
+    color: var(--accent-color);
+}
+
+.accordion-content {
+    background-color: var(--bg-primary); /* Darker background for content area */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    padding: 0 20px; /* Initial padding */
+}
+/* Adjust accordion content padding when expanded */
+.accordion-content[style*="max-height"]:not([style*="max-height: 0px"]) {
+    padding-bottom: 20px; /* Ensure bottom padding when open */
+    padding-top: 15px; /* Add top padding when open */
+}
+
+
+.accordion-intro {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-top: 0; /* Adjusted from 20px as padding is on content */
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Radio Option Styling within Accordion */
+.radio-option {
+    margin-bottom: 15px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 15px; /* Consistent padding */
+    transition: all 0.3s ease;
+    position: relative;
+    background-color: var(--bg-primary); /* Darker background for each option box */
+    cursor: pointer; /* Make the whole box clickable */
+}
+
+.radio-option:last-child {
+    margin-bottom: 0; /* Ensures the last item doesn't have extra margin at the bottom of accordion content */
+}
+
+/* Hover effect for the entire radio-option box */
+.radio-option:hover {
+    border-color: var(--accent-color);
+    /* Removed box-shadow to match before.png's solid border feel on hover */
+    transform: translateY(-3px);
+}
+
+
+.radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none; /* Hide default radio button, label will handle click */
+}
+
+.radio-option label {
+    display: block; /* Make label cover the whole area */
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-primary);
+    position: relative;
+    padding-left: 35px; /* Space for custom radio circle */
+    min-height: 24px; /* Ensure vertical alignment */
+    margin-bottom: 0; /* Reset default label margin */
+    /* Use flexbox for layout within the label */
+    display: flex;
+    flex-wrap: wrap; /* Allow content to wrap */
+    align-items: flex-start; /* Align items to the start vertically */
+}
+
+.radio-option .option-header-content {
+    display: flex;
+    align-items: center;
+    flex-basis: 100%; /* Take full width */
+    margin-bottom: 5px; /* Space before description */
+}
+
+.radio-option .option-name {
+    font-weight: 600;
+    margin-right: 10px; /* Space from info icon */
+    line-height: 1.2; /* Adjust line height for better alignment */
+}
+
+/* Price now positioned below description, matching before.png */
+.radio-option .option-price {
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-top: 10px; /* Space from description */
+    margin-left: 35px; /* Align with description padding */
+    display: block; /* Ensure it takes its own line */
+    flex-basis: 100%; /* Take full width */
+    text-align: left; /* Ensure left alignment */
+}
+
+/* Custom radio circle */
+.radio-circle {
+    position: absolute;
+    left: 0;
+    top: 2px; /* Adjust as needed for vertical alignment with text */
+    height: 20px; /* Smaller circle */
+    width: 20px; /* Smaller circle */
+    background-color: var(--bg-secondary); /* Background for the circle itself */
+    border: 2px solid var(--border-subtle);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.radio-option input[type="radio"]:checked + label .radio-circle {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.radio-option input[type="radio"]:checked + label .radio-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* Info Icon for Upsells within radio option - positioned correctly */
+.radio-option .info-icon {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem; /* Smaller info icon */
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto; /* Push to the right within its flex container */
+    flex-shrink: 0; /* Prevent shrinking */
+    transition: color 0.2s ease;
+}
+
+.radio-option .info-icon:hover {
+    color: var(--accent-color);
+}
+
+.radio-option .option-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0; /* Removed top margin, controlled by flex layout */
+    padding-left: 35px; /* Align with label content */
+    line-height: 1.4;
+    text-align: left;
+    flex-basis: 100%; /* Take full width below name/price/icon */
+    margin-bottom: 0; /* Reset default margin */
+}
+
+/* Selected state for the entire radio-option box */
+.radio-option.selected {
+    border: 2px solid var(--accent-color); /* Prominent solid border, matching before.png */
+    /* Ensure no conflicting box-shadow if it makes border look like outline */
+    box-shadow: none; /* Remove box-shadow to rely purely on border */
+}
+body.light-theme .radio-option.selected {
+    border-color: var(--accent-color);
+    box-shadow: none; /* Remove box-shadow */
+}
+
+
 .button-group {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-top: 25px; /* Spacing from upsell selection */
 }
 
 .add-to-cart-btn, .buy-now-btn {
@@ -184,6 +396,99 @@ body.light-theme .offers-section {
     display: inline-block;
     border: 1px dashed var(--border-subtle);
 }
+
+/* --- Upsell Info Modal Styles --- */
+.upsell-info-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.upsell-info-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.upsell-info-modal-content {
+    background: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-subtle);
+    text-align: left;
+}
+
+.upsell-info-modal-overlay.show .upsell-info-modal-content {
+    transform: scale(1);
+}
+
+.upsell-modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.upsell-modal-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.upsell-info-modal-content h3 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    border-left: none;
+    padding-left: 0;
+}
+
+.upsell-info-modal-content p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.upsell-info-modal-content .offerings-list {
+    list-style: none;
+    padding: 0;
+}
+
+.upsell-info-modal-content .offerings-list li {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    padding-left: 0;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+.upsell-info-modal-content .offerings-list li i {
+    color: var(--accent-color);
+    margin-right: 10px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
 
 @media (max-width: 992px) {
     .product-container {
