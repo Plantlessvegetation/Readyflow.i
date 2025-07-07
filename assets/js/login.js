@@ -6,8 +6,7 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut // Import signOut function
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import {
     getFirestore,
@@ -86,20 +85,13 @@ async function migrateLocalCartToFirestore(uid) {
 
 // Listen for authentication state changes (This listener is now the primary trigger for updateCartIcon sitewide)
 onAuthStateChanged(auth, async (user) => {
-    console.log('LOGIN.JS: onAuthStateChanged - User object:', user); // DEBUGGING LOG
     if (user) {
         currentUser = user; // Update the local currentUser variable
-        console.log('LOGIN.JS: User signed in:', user.uid); // DEBUGGING LOG
-        // If on the login page and user is logged in, you might want to redirect.
-        // For now, it only logs, allowing user to still see login page.
-        // If a redirect is desired:
-        // if (window.location.pathname.includes('pages/login.html')) {
-        //     window.location.href = '../index.html';
-        // }
+        console.log('User signed in:', user.uid);
         await migrateLocalCartToFirestore(user.uid);
     } else {
         currentUser = null; // Clear the local currentUser variable
-        console.log('LOGIN.JS: User signed out.'); // DEBUGGING LOG
+        console.log('User signed out.');
     }
     // IMPORTANT: Call updateCartIcon AFTER the auth state is known (and migration is potentially done)
     // This ensures the icon reflects the correct cart count for logged-in or guest users across all pages.
@@ -114,18 +106,11 @@ if (signUpForm) {
 
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
-        const username = document.getElementById('signup-username').value; // Get username
 
         createUserWithEmailAndPassword(auth, email, password)
-            .then(async userCredential => { // Made async to use await
+            .then(userCredential => {
                 const user = userCredential.user;
                 console.log('Sign up successful!', user);
-
-                // Save username to Firestore
-                const userRef = doc(db, 'users', user.uid);
-                await setDoc(userRef, { username: username, email: user.email }, { merge: true });
-                console.log('User profile created in Firestore.');
-
                 alert('Account created successfully! You are now logged in.');
                 window.location.href = '../index.html';
             })
@@ -156,7 +141,7 @@ if (signInForm) {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.error('Sign in error:', errorCode, errorMessage);
-                if (errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential') {
+                if (errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found') {
                     alert('Invalid email or password. Please try again.');
                 } else {
                     alert(`Error: ${errorMessage}`);
@@ -165,4 +150,4 @@ if (signInForm) {
     });
 }
 
-export { auth, db, currentUser, signOut }; // Export signOut
+export { auth, db, currentUser };

@@ -1,8 +1,113 @@
 /* --- CUSTOM DEV CALCULATOR STYLES --- */
-.calculator-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 60px; max-width: 1200px; margin: 80px auto; padding: 0 25px; }
+
+/* Main selection layout for the two initial cards */
+.selection-layout {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 0 25px;
+}
+
+.selection-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.selection-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-color);
+}
+
+.selection-card .card-icon {
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    margin-bottom: 25px;
+    background-color: rgba(39, 174, 96, 0.1);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+body.light-theme .selection-card .card-icon {
+    background-color: rgba(124, 58, 237, 0.1);
+}
+
+.selection-card h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.selection-card p {
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    flex-grow: 1; /* Pushes button to bottom */
+}
+
+.selection-card .btn {
+    width: 100%;
+}
+
+/* Hidden state for dynamic sections */
+.hidden {
+    display: none !important;
+}
+
+/* Back button style */
+.back-to-selection-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s ease;
+}
+
+.back-to-selection-btn:hover {
+    color: var(--accent-color);
+}
+
+
+/* Reusing and adapting original calculator styles for "Develop a Website" */
+.calculator-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 25px;
+}
 .form-section + .form-section { margin-top: 50px; }
 .calculator-form h3 { font-size: 1.8rem; margin-bottom: 25px; color: var(--text-primary); }
-.option-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary); }
+.option-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    text-align: left; /* Ensure text aligns left for options */
+}
 .option-box:hover { border-color: var(--accent-color); }
 .option-box.selected { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(39, 174, 96, 0.3); }
 body.light-theme .option-box.selected { box-shadow: 0 0 15px rgba(124, 58, 237, 0.2); }
@@ -21,7 +126,143 @@ body.light-theme .price-estimate-box { border-color: transparent; box-shadow: 0 
 .consultation-btn { background: var(--accent-color); width: 100%; padding: 18px 20px; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; border-radius: 24px; border: none; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
 .consultation-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
 
-@media (max-width: 992px) { 
-    .calculator-layout { grid-template-columns: 1fr; } 
-    .price-estimate-box { position: static; margin-top: 40px; } 
+
+/* Styles for "Edit Existing Code" section */
+.edit-code-layout {
+    max-width: 800px;
+    margin: 80px auto;
+    padding: 0 25px;
+}
+
+.edit-code-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.edit-code-form h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.edit-code-form .form-intro-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.upload-box {
+    border: 2px dashed var(--border-subtle);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.upload-box .upload-btn {
+    padding: 10px 20px !important; /* Override general btn padding for smaller size */
+    font-size: 0.9rem !important;
+}
+
+.upload-box #file-upload-status {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.upload-box .upload-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.edit-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.edit-options-grid .option-box {
+    padding: 15px;
+    font-size: 0.95rem;
+}
+
+.edit-price-summary {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.edit-price-summary h4 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.edit-price-summary #edit-estimated-price {
+    font-family: 'Poppins', sans-serif;
+    color: var(--accent-color);
+    font-size: 2.5rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.edit-price-summary .book-edit-btn {
+    width: 100%;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .selection-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    .selection-card {
+        width: 100%;
+        max-width: 450px;
+    }
+    .calculator-layout {
+        grid-template-columns: 1fr;
+    }
+    .price-estimate-box {
+        position: static;
+        margin-top: 40px;
+    }
+    .edit-options-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .calculator-form, .edit-code-form {
+        padding: 25px;
+    }
+    .selection-card {
+        padding: 30px;
+    }
+    .selection-card .card-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2.5rem;
+    }
+    .selection-card h2 {
+        font-size: 1.6rem;
+    }
+    .upload-box {
+        padding: 20px;
+    }
 }

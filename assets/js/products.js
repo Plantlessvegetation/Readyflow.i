@@ -11,7 +11,7 @@ export const products = [ // Added export
     pages: '2-5',
     image: '../assets/images/cafe-small-business.png',
     description: 'A charming template perfect for local cafes, bakeries, and small shops.',
-    useCases: ['Local Cafes', 'Bakeries & Sweet Shops', 'Small Boutiques', 'Artisan Stores'],
+    useCases: ['Local Cafes', 'Bakery & Sweet Shops', 'Small Boutiques', 'Artisan Stores'],
     media: [
       { type: 'youtube', src: 'https://www.youtube.com/embed/GwXNrIcBaUw', thumb: '../assets/images/cafe-video-thumb.png' },
       { type: 'image', src: '../assets/images/cafe-home.png', thumb: '../assets/images/cafe-home.png' },

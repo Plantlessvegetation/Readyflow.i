@@ -12,7 +12,7 @@ export const upsellPlans = [
     {
         id: 'get-online',
         name: 'Get Online Bundle',
-        price: 499, // Fixed price for this bundle
+        price: 699, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
         description: 'Get your chosen website template customized and live on the internet, hassle-free.',
         detailedOfferings: [
             'Core Content Personalization (Name, Contact Info, Address, About Us, 3-5 Headlines)',
@@ -23,7 +23,7 @@ export const upsellPlans = [
     {
         id: 'enhanced-presence',
         name: 'Enhanced Presence Pack',
-        price: 999, // Fixed price for this bundle
+        price: 999, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
         description: 'Increase your website\'s visibility and connect with your audience directly, building a stronger online presence.',
         detailedOfferings: [
             'All "Get Online" Bundle services are included.', // This is descriptive, not a literal price addition
@@ -36,7 +36,7 @@ export const upsellPlans = [
     {
         id: 'pro-conversion',
         name: 'Pro Conversion Package',
-        price: 2499, // Fixed price for this bundle
+        price: 2499, // Fixed price for this bundle (adjusted as per strategic plan target for customer)
         description: 'Transform your website into a lead-generating asset with essential business integrations.',
         detailedOfferings: [
             'All "Enhanced Presence" Pack services are included.', // This is descriptive, not a literal price addition
@@ -46,6 +46,12 @@ export const upsellPlans = [
         ]
     }
 ];
+
+// Helper function to get the details of a specific upsell plan
+export function getUpsellPlanDetails(selectedTierId) {
+    const plan = upsellPlans.find(p => p.id === selectedTierId);
+    return plan; // Returns the full plan object or undefined if not found
+}
 
 // Helper function to get the price of a specific upsell tier
 // This now directly returns the 'price' property of the found plan.

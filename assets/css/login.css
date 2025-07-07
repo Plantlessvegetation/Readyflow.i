@@ -71,8 +71,7 @@ form {
     justify-content: center;
     flex-direction: column;
     padding: 0 50px;
-    height: 100%; /* Ensure form takes full height of container */
-    min-height: 300px; /* Added for stability: Ensures form has a minimum height */
+    height: 100%;
     text-align: center;
 }
 
@@ -114,12 +113,10 @@ form {
     transition: all 0.6s ease-in-out;
 }
 
-/* Explicit default states for form containers */
 .sign-in-container {
     left: 0;
     width: 50%;
-    opacity: 1; /* Ensure visible by default */
-    z-index: 2; /* Ensure on top by default */
+    z-index: 2;
 }
 
 .container-box.right-panel-active .sign-in-container {
@@ -129,8 +126,8 @@ form {
 .sign-up-container {
     left: 0;
     width: 50%;
-    opacity: 0; /* Hidden by default */
-    z-index: 1; /* Behind sign-in by default */
+    opacity: 0;
+    z-index: 1;
 }
 
 .container-box.right-panel-active .sign-up-container {
@@ -203,7 +200,6 @@ body.dark-theme .overlay {
     height: 100%;
     width: 50%;
     transform: translateX(0);
-    opacity: 1; /* Ensure visible by default */
     transition: transform 0.6s ease-in-out;
 }
 

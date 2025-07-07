@@ -1,37 +1,12 @@
 // This script handles all functionality for the cart.html page.
 
-// REMOVED: import { products } from '/assets/js/products.js'; // Products will now be accessed via window.products
-
+import { products } from './products.js';
 import { getCart, updateCartIcon } from './main.js';
-import { auth, db, currentUser } from './login.js';
-import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { auth, db, currentUser } from './login.js'; // Import auth, db, currentUser
+import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // Import Firestore functions
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Import onAuthStateChanged
 
-// Access products from global scope - add defensive check
-const products = (typeof window !== 'undefined' && window.products) ? window.products : [];
-
-console.log('CART.JS: File has started executing (final version with global products).'); 
-console.log('CART.JS: Initial check - products from window:', products); // New diagnostic log
-
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('CART.JS: DOMContentLoaded event fired (final version with global products).');
-
-    // Make sure products is defined before proceeding, as it's critical
-    if (!products || products.length === 0) {
-        console.error('CART.JS: ERROR! products array is empty or UNDEFINED. Product data is not available globally.');
-        const cartItemsContainer = document.getElementById('cart-items-container');
-        if (cartItemsContainer) {
-            cartItemsContainer.innerHTML = `
-                <div class="empty-cart-message">
-                    <p>Error: Product data could not be loaded. Please ensure products.js is correctly loaded.</p>
-                    <a href="../pages/website-store.html" class="btn btn-primary" style="margin-top: 20px;">Browse Templates</a>
-                </div>
-            `;
-        }
-        return; // Stop execution if products is critically missing
-    }
-
-
+document.addEventListener('DOMContentLoaded', async () => { // Keep async for other event listeners
     const cartItemsContainer = document.getElementById('cart-items-container');
     const cartSummary = document.getElementById('cart-summary');
     const cartSubtotalEl = document.getElementById('cart-subtotal');
@@ -53,11 +28,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     async function renderCart() {
-        console.log('CART.JS: renderCart() started.'); 
-        console.log('CART.JS: Current auth.currentUser:', auth.currentUser ? auth.currentUser.email : 'Not logged in');
-        
+        // --- ADDED CONSOLE.LOGS FOR DEBUGGING ---
+        console.log('--- Starting cart render process ---');
+        console.log('Am I logged in (auth.currentUser)?', auth.currentUser);
         const cart = await getCart(); // Get the cart data
-        console.log('CART.JS: Cart data retrieved from getCart():', cart);
+        console.log('What cart data did I get?', cart);
+        console.log('Do I have product details (products)?', products);
+        // --- END OF CONSOLE.LOGS ---
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `
@@ -67,47 +44,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
             if(cartSummary) cartSummary.style.display = 'none';
-            console.log('CART.JS: Cart is empty, displayed empty message.');
             return;
         }
-
-        console.log('CART.JS: Cart is NOT empty. Number of items:', cart.length);
-        console.log('CART.JS: Products array available to cart.js (after window access):', products); 
 
         let cartHTML = '';
         let subtotal = 0;
 
         for (const cartItem of cart) {
-            console.log('CART.JS: Processing cart item:', cartItem);
-            const product = products.find(p => p.id === cartItem.id); 
-            
-            console.log('CART.JS: Found product for cart item:', product);
-
+            const product = products.find(p => p.id === cartItem.id);
             if (product) {
                 subtotal += product.price;
                 cartHTML += `
                     <div class="cart-item" data-id="${product.id}">
                         <a href="../pages/product-detail.html?id=${product.id}" class="cart-item-img-link">
-                            <img src="${product.image}" alt="${product.name}" class="cart-item-img" onerror="this.src='https://placehold.co/100x75/1A202C/FFFFFF?text=Image+Error'">
+                            <img src="${product.image}" alt="${product.name}" class="cart-item-img" onerror="this.src='https://placehold.co/100x75/1A202C/FFFFFF?text=...'">
                         </a>
                         <div class="cart-item-details">
                             <h3><a href="../pages/product-detail.html?id=${product.id}">${product.name}</a></h3>
                             <p>₹${product.price}</p>
-                        </div>
-                        <button class="cart-item-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `;
-                console.log('CART.JS: Successfully added HTML for product:', product.name);
-            } else {
-                console.warn('CART.JS: Product details not found for cart item ID (check products.js content or ID match):', cartItem.id);
-                cartHTML += `
-                    <div class="cart-item" data-id="${cartItem.id}">
-                        <div class="cart-item-img-link">
-                            <img src="https://placehold.co/100x75/1A202C/FFFFFF?text=Product+Missing" alt="Missing Product" class="cart-item-img">
-                        </div>
-                        <div class="cart-item-details">
-                            <h3>Missing Product (ID: ${cartItem.id})</h3>
-                            <p>Price: N/A</p>
                         </div>
                         <button class="cart-item-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
                     </div>
@@ -122,7 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         cartSummary.style.display = 'block';
         addRemoveListeners();
-        console.log('CART.JS: Final HTML injected into cart-items-container. Length:', cartHTML.length);
     }
 
     function handleCouponDisplay(subtotal) {
@@ -163,9 +116,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function applyCoupon() {
         const enteredCode = promoCodeInput.value.trim().toUpperCase();
-        // Access products from window object
         const subtotal = (await getCart()).reduce((acc, item) => {
-            const product = window.products.find(p => p.id === item.id); // Use window.products
+            const product = products.find(p => p.id === item.id);
             return acc + (product ? product.price : 0);
         }, 0);
 
@@ -181,19 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Check if the user is already logged in using Firebase auth
-        if (auth.currentUser) {
-            // User is logged in, directly apply the coupon
-            localStorage.setItem('applied_coupon', COUPON.code);
-            await renderCart(); // Re-render cart to show applied discount and update totals
-            promoMessageEl.className = 'promo-message success';
-            promoMessageEl.textContent = `Success! "${COUPON.code}" applied.`;
-            promoCodeInput.disabled = true;
-            applyPromoBtn.disabled = true;
-        } else {
-            // User is not logged in, prompt them to login
-            showLoginModal();
-        }
+        showLoginModal();
     }
 
     function showLoginModal() {
@@ -259,4 +199,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         await updateCartIcon(); // Always update cart icon on auth state change
     });
+
+    // We are removing the direct call to renderCart from DOMContentLoaded.
+    // The onAuthStateChanged listener above is now the primary trigger for rendering the cart
+    // on the cart page, ensuring Firebase auth state is known before fetching cart data.
+    // REMOVED: if(cartItemsContainer) { await renderCart(); }
 });
