@@ -4,7 +4,8 @@ import { products } from './products.js';
 import { getCart, updateCartIcon } from './main.js';
 import { auth, db, currentUser } from './login.js';
 import { doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// REMOVE: import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // This import is no longer needed for this test
+
 import { getUpsellPlanDetails, getUpsellPlanPrice } from './upsell.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -29,14 +30,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     async function renderCart() {
-        console.log('--- Starting renderCart function ---'); // Added debug
-        console.log('Current cartItemsContainer element:', cartItemsContainer); // Added debug
+        console.log('--- Starting renderCart function (Direct Call Test) ---'); // Modified debug
+        console.log('Current cartItemsContainer element:', cartItemsContainer);
 
         const cart = await getCart();
-        console.log('Cart data received for rendering:', cart); // Added debug
+        console.log('Cart data received for rendering:', cart);
 
         if (cart.length === 0) {
-            console.log('Cart is empty, showing empty message.'); // Added debug
+            console.log('Cart is empty, showing empty message.');
             cartItemsContainer.innerHTML = `
                 <div class="empty-cart-message">
                     <p>Your cart is currently empty.</p>
@@ -51,9 +52,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         let subtotal = 0;
 
         for (const cartItem of cart) {
-            console.log('Processing cart item:', cartItem); // Added debug
+            console.log('Processing cart item:', cartItem);
             const product = products.find(p => p.id === cartItem.id);
-            console.log('Found product details:', product); // Added debug
+            console.log('Found product details:', product);
 
             if (product) {
                 let itemPrice = 0;
@@ -61,13 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (cartItem.upsellId && cartItem.upsellId !== 'none') {
                     const upsellDetails = getUpsellPlanDetails(cartItem.upsellId);
-                    console.log('Upsell details for item:', upsellDetails); // Added debug
+                    console.log('Upsell details for item:', upsellDetails);
                     if (upsellDetails) {
                         itemPrice = upsellDetails.price;
                         itemDescription = `${product.name} (with ${upsellDetails.name})`;
                     } else {
-                        itemPrice = product.price; // Fallback if upsellDetails not found
-                        console.warn(`Upsell details not found for ID: ${cartItem.upsellId}. Using base product price.`); // Added debug warning
+                        itemPrice = product.price;
+                        console.warn(`Upsell details not found for ID: ${cartItem.upsellId}. Using base product price.`);
                     }
                 } else {
                     itemPrice = product.price;
@@ -75,9 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 subtotal += itemPrice;
 
-                // Ensure paths are correct based on cart.html's location relative to pages/ and assets/
                 const productDetailPath = `../pages/product-detail.html?id=${product.id}`;
-                const productImagePath = product.image.startsWith('http') ? product.image : `../${product.image}`; // Adjust for relative paths
+                const productImagePath = product.image.startsWith('http') ? product.image : `../${product.image}`;
 
                 cartHTML += `
                     <div class="cart-item" data-id="${product.id}" data-upsell-id="${cartItem.upsellId || 'none'}">
@@ -91,97 +91,38 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <button class="cart-item-remove" title="Remove item"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 `;
-                console.log('Generated HTML for item:', cartHTML); // Added debug
+                console.log('Generated HTML for item:', cartHTML);
             } else {
-                console.error('Product details not found in products.js for cartItem:', cartItem); // Added debug
+                console.error('Product details not found in products.js for cartItem:', cartItem);
             }
         }
 
-        console.log('Final generated cartHTML:', cartHTML); // Added debug
+        console.log('Final generated cartHTML:', cartHTML);
         cartItemsContainer.innerHTML = cartHTML;
-        console.log('cartItemsContainer updated with new HTML.'); // Added debug
+        console.log('cartItemsContainer updated with new HTML.');
         cartSubtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
 
         handleCouponDisplay(subtotal);
 
         cartSummary.style.display = 'block';
         addRemoveListeners();
-        console.log('--- renderCart function finished ---'); // Added debug
+        console.log('--- renderCart function finished (Direct Call Test) ---'); // Modified debug
     }
 
     function handleCouponDisplay(subtotal) {
-        let total = subtotal;
-        let discount = 0;
-        const appliedCoupon = localStorage.getItem('applied_coupon');
-
-        if (appliedCoupon === COUPON.code && subtotal >= COUPON.minSpend) {
-            discount = subtotal * COUPON.discount;
-            total = subtotal - discount;
-
-            promoMessageEl.className = 'promo-message success';
-            promoMessageEl.textContent = `Success! "${COUPON.code}" applied.`;
-            discountRow.style.display = 'flex';
-            cartDiscountEl.textContent = `-₹${discount.toLocaleString('en-IN')}`;
-            promoCodeInput.value = COUPON.code;
-            promoCodeInput.disabled = true;
-            applyPromoBtn.disabled = true;
-        } else {
-            localStorage.removeItem('applied_coupon');
-            discountRow.style.display = 'none';
-            promoCodeInput.value = '';
-            promoCodeInput.disabled = false;
-            applyPromoBtn.disabled = false;
-
-            if (subtotal < COUPON.minSpend) {
-                const needed = COUPON.minSpend - subtotal;
-                promoMessageEl.className = 'promo-message info';
-                promoMessageEl.innerHTML = `Add items worth <strong>₹${needed.toLocaleString('en-IN')}</strong> more to use code <strong>${COUPON.code}</strong> for 50% off!`;
-            } else {
-                promoMessageEl.className = 'promo-message';
-                promoMessageEl.textContent = `Have a promo code? Enter it above.`;
-            }
-        }
-
-        cartTotalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
+        // ... (existing code) ...
     }
 
     async function applyCoupon() {
-        const enteredCode = promoCodeInput.value.trim().toUpperCase();
-        const subtotal = (await getCart()).reduce((acc, item) => {
-            const product = products.find(p => p.id === item.id);
-            if (product) {
-                if (item.upsellId && item.upsellId !== 'none') {
-                    const upsellDetails = getUpsellPlanDetails(item.upsellId);
-                    return acc + (upsellDetails ? upsellDetails.price : 0);
-                } else {
-                    return acc + product.price;
-                }
-            }
-            return acc;
-        }, 0);
-
-
-        if (enteredCode !== COUPON.code) {
-            promoMessageEl.className = 'promo-message error';
-            promoMessageEl.textContent = 'Invalid promo code.';
-            return;
-        }
-
-        if (subtotal < COUPON.minSpend) {
-            promoMessageEl.className = 'promo-message error';
-            promoMessageEl.textContent = `You need to spend at least ₹${COUPON.minSpend} to use this code.`;
-            return;
-        }
-
-        showLoginModal();
+        // ... (existing code) ...
     }
 
     function showLoginModal() {
-        if (loginModal) loginModal.classList.add('show');
+        // ... (existing code) ...
     }
 
     function hideLoginModal() {
-        if (loginModal) loginModal.classList.remove('show');
+        // ... (existing code) ...
     }
 
     if (applyPromoBtn) applyPromoBtn.addEventListener('click', applyCoupon);
@@ -194,47 +135,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function addRemoveListeners() {
-        const removeButtons = document.querySelectorAll('.cart-item-remove');
-        removeButtons.forEach(button => {
-            button.addEventListener('click', async (e) => {
-                const cartItemElement = e.currentTarget.closest('.cart-item');
-                const productId = cartItemElement.dataset.id;
-                const upsellId = cartItemElement.dataset.upsellId || 'none';
-                await removeFromCart(productId, upsellId);
-            });
-        });
+        // ... (existing code) ...
     }
 
     async function removeFromCart(productId, upsellIdToRemove) {
-        let cart = await getCart();
-        const updatedCart = cart.filter(item => !(item.id === productId && (item.upsellId || 'none') === upsellIdToRemove));
-
-        if (auth.currentUser) {
-            const cartRef = doc(db, 'carts', auth.currentUser.uid);
-            try {
-                if (updatedCart.length > 0) {
-                    await setDoc(cartRef, { items: updatedCart });
-                } else {
-                    await deleteDoc(cartRef);
-                }
-                console.log('Item removed from Firestore cart.');
-            } catch (error) {
-                console.error('Error removing item from Firestore cart:', error);
-                return;
-            }
-        } else {
-            localStorage.setItem('readyflow_cart', JSON.stringify(updatedCart));
-            console.log('Item removed from localStorage cart.');
-        }
-
-        await renderCart();
-        await updateCartIcon();
+        // ... (existing code) ...
     }
 
-    onAuthStateChanged(auth, async (user) => {
-        if (window.location.pathname.includes('/cart/cart.html')) {
-            await renderCart();
-        }
-        await updateCartIcon();
-    });
+    // --- TEMPORARY DEBUGGING CALL ---
+    // Make sure this is wrapped in a conditional to only run on cart.html
+    if (window.location.pathname.includes('/cart/cart.html')) {
+        await renderCart(); // Call renderCart directly for testing
+    }
+    // Note: updateCartIcon is globally handled by main.js's onAuthStateChanged listener.
+    // If you need it immediately on cart page load regardless of auth state, you could call it here too.
+    // For now, focus on renderCart.
 });
