@@ -133,9 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const initialMedia = product.media[0];
             let mainMediaHTML = '';
             if (initialMedia.type === 'youtube') {
-                // Corrected YouTube embed URL format
+                // ADDED DEBUG LOGS
+                console.log('YouTube video source URL (from products.js):', initialMedia.src);
                 const videoId = initialMedia.src.split('v=')[1]?.split('&')[0] || initialMedia.src.split('/').pop();
-                mainMediaHTML = `<iframe class="showcased-video" src="http://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                console.log('Extracted YouTube Video ID:', videoId);
+                // CORRECTED YOUTUBE EMBED URL FORMAT AND PROTOCOL
+                mainMediaHTML = `<iframe class="showcased-video" src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             } else if (initialMedia.type === 'video') {
                  mainMediaHTML = `<video class="showcased-video" controls autoplay loop muted playsinline><source src="${initialMedia.src}" type="video/mp4"></video>`;
             } else {
@@ -300,9 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     let newMediaHTML = '';
                     if (type === 'youtube') {
-                        // Corrected YouTube embed URL format
+                        // ADDED DEBUG LOGS
+                        console.log('YouTube thumbnail clicked. Source URL:', src);
                         const videoId = src.split('v=')[1]?.split('&')[0] || src.split('/').pop();
-                        newMediaHTML = `<iframe class="showcased-video" src="http://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                        console.log('Extracted YouTube Video ID from thumbnail click:', videoId);
+                        // CORRECTED YOUTUBE EMBED URL FORMAT AND PROTOCOL
+                        newMediaHTML = `<iframe class="showcased-video" src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                     } else if (type === 'video') {
                         newMediaHTML = `<video class="showcased-video" controls autoplay loop muted playsinline><source src="${src}" type="video/mp4"></video>`;
                     } else {

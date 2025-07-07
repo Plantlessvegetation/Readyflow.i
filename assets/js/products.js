@@ -13,7 +13,6 @@ export const products = [ // Added export
     description: 'A charming template perfect for local cafes, bakeries, and small shops.',
     useCases: ['Local Cafes', 'Bakery & Sweet Shops', 'Small Boutiques', 'Artisan Stores'],
     media: [
-      { type: 'youtube', src: 'https://www.youtube.com/embed/GwXNrIcBaUw', thumb: '../assets/images/cafe-video-thumb.png' },
       { type: 'image', src: '../assets/images/cafe-home.png', thumb: '../assets/images/cafe-home.png' },
       { type: 'image', src: '../assets/images/cafe-menu.png', thumb: '../assets/images/cafe-menu.png' },
       { type: 'image', src: '../assets/images/cafe-hours.png', thumb: '../assets/images/cafe-hours.png' },
@@ -32,7 +31,6 @@ export const products = [ // Added export
     description: 'A high-converting landing page to drive registrations for your next event.',
     useCases: ['Webinar Registrations', 'Conference Sign-ups', 'Workshop Tickets', 'Product Launches'],
     media: [
-        { type: 'youtube', src: 'https://www.youtube.com/embed/yLjRkPtWrhU', thumb: '../assets/images/event-home.png' },
         { type: 'image', src: '../assets/images/event-home.png', thumb: '../assets/images/event-home.png'},
         { type: 'image', src: '../assets/images/event-detail.png', thumb: '../assets/images/event-detail.png'},
         { type: 'image', src: '../assets/images/event-registration.png', thumb: '../assets/images/event-registration.png' },
@@ -51,7 +49,6 @@ export const products = [ // Added export
     description: 'An energetic and modern site for personal trainers, gyms, and fitness studios.',
     useCases: ['Personal Trainers', 'Gyms & Fitness Centers', 'Yoga Studios', 'Health Coaches'],
     media: [
-       { type: 'youtube', src: 'https://www.youtube.com/embed/EDfh2ALhsZY', thumb: '../assets/images/gym-home.png'},
        { type: 'image', src: '../assets/images/gym-home.png', thumb: '../assets/images/gym-home.png'},
        { type: 'image', src: '../assets/images/gym-trainer.png', thumb: '../assets/images/gym-trainer.png'},
        { type: 'image', src: '../assets/images/gym-plans.png', thumb: '../assets/images/gym-plans.png'},
@@ -70,7 +67,6 @@ export const products = [ // Added export
     description: 'A sleek, modern website give wings to your store.',
     useCases: ['Shop Oweners', 'Existing Business Persons', 'Sellers', 'Freelancers'],
     media: [
-        { type: 'youtube', src: 'https://www.youtube.com/embed/He3mW8-3MWo', thumb: '../assets/images/xyz-home.png' },
         { type: 'image', src: '../assets/images/xyz-home.png', thumb: '../assets/images/xyz-home.png' },
         { type: 'image', src: '../assets/images/xyz-location.png', thumb: '../assets/images/xyz-location.png' },
         { type: 'image', src: '../assets/images/xyz-offers.png', thumb: '../assets/images/xyz-offers.png' },
@@ -89,7 +85,6 @@ export const products = [ // Added export
     description: 'A focused e-commerce template designed to sell a single flagship product.',
     useCases: ['Single Product Brands', 'Book Authors', 'Digital Products', 'Kickstarter Campaigns'],
     media: [
-       { type: 'video', src: '../assets/images/product-video.mp4', thumb: '../assets/images/product-home.png' },
        { type: 'image', src: '../assets/images/product-home.png', thumb: '../assets/images/product-home.png' },
        { type: 'image', src: '../assets/images/product-qualities.png', thumb: '../assets/images/product-qualities.png' },
        { type: 'image', src: '../assets/images/product-timer.png', thumb: '../assets/images/product-timer.png' },
@@ -108,7 +103,6 @@ export const products = [ // Added export
     description: 'A visually stunning, image-focused portfolio for photographers and artists.',
     useCases: ['Photographers', 'Videographers', 'Visual Artists', 'Design Agencies'],
     media: [
-       { type: 'youtube', src: 'https://www.youtube.com/embed/-ZzsbOU0uTI', thumb: '../assets/images/photo-home.png' },
        { type: 'image', src: '../assets/images/photo-home.png', thumb: '../assets/images/photo-home.png' },
        { type: 'image', src: '../assets/images/photo-services.png', thumb: '../assets/images/photo-services.png' },
        { type: 'image', src: '../assets/images/photo-work.png', thumb: '../assets/images/photo-work.png' },
@@ -127,7 +121,6 @@ export const products = [ // Added export
     description: 'A feature-rich template for real estate agents and property listings.',
     useCases: ['Real Estate Agents', 'Property Developers', 'Rental Agencies', 'Brokerages'],
     media: [
-        { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Video' },
         { type: 'image', src: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Image+1', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Image+1' },
     ]
   },
@@ -142,7 +135,6 @@ export const products = [ // Added export
     description: 'A clean, professional one-page site to act as your online resume.',
     useCases: ['Job Seekers', 'Students', 'Professionals', 'Academics'],
     media: [
-        { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Video' },
         { type: 'image', src: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Image+1', thumb: 'https://placehold.co/150x100/1A202C/FFFFFF?text=Image+1' },
     ]
   }
